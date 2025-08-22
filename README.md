@@ -1,61 +1,44 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="484" height="200" viewBox="0 0 484 689"><path fill="none" d="M0 0L484 0L484 689L0 689L0 0Z"/>
+<path fill="#3B82F6" d="M341.817 38.0921C354.767 36.7549 349.829 51.3787 348.709 59.1511L344.035 90.9505C340.106 115.941 335.542 140.802 328.836 165.216C324.941 180.762 318.601 195.95 313.923 211.153C304.845 240.656 295.19 266.393 278.496 292.551C267.121 310.376 257.178 325.501 243.21 341.732C260.778 342.154 249.033 355.543 243.813 363.061C212.41 408.285 171.253 446.128 126.666 478.074C125.039 479.24 120.035 482.506 119.153 483.999C117.237 487.24 114.823 497.74 113.949 501.133L104.652 537.842C102.093 548.249 96.8163 575.722 91.9685 582.954C88.426 588.239 82.9956 592.656 78.3479 596.967L58.9229 614.66C52.7254 619.623 46.3851 615.321 48.202 607.82C49.1653 603.843 50.4768 600.093 51.736 596.207L56.9044 579.816C65.3142 553.709 74.3461 527.87 83.3317 501.961C86.5582 492.658 89.5807 483.536 91.6734 473.901C84.7351 458.283 86.1282 440.236 87.0234 423.542C89.4179 378.889 98.6222 334.611 114.292 292.734C118.562 281.324 123.765 270.241 128.558 259.045C140.122 231.938 156.746 207.715 174.317 184.209C179.406 177.332 184.467 170.364 189.8 163.679C219.006 127.071 253.909 95.7392 292.342 69.0903C306.23 59.4605 320.276 50.0299 334.989 41.7078C337.271 40.4175 339.417 39.1675 341.817 38.0921Z"/>
+<path fill="#DBEAFE" d="M312.947 78.3205L313.555 78.4608C315.077 82.7911 307.883 108.771 306.051 114.731C302.024 126.883 298.762 140.423 293.008 151.934C280.076 177.8 255.672 197.809 234.394 216.766C231.75 219.122 228.674 221.333 229.957 225.432C230.683 227.75 233.353 229.144 235.659 228.926C240.906 228.47 246.318 227.315 251.511 226.372L280.6 221.161C276.827 232.712 271.331 243.454 265.268 253.956C261.109 261.161 256.888 269.601 252.435 276.56C248.749 282.319 243.42 289.102 239.185 294.811C231.924 304.598 224.641 314.233 216.69 323.615C210.171 331.307 200.443 339.499 194.287 347.643C193.832 348.244 193.766 350.074 194.132 350.689C199.126 357.102 211.337 351.725 218.164 354.227C220.457 355.067 219.954 357.96 219.045 359.561C216.053 364.828 211.704 369.553 207.798 374.196C191.595 393.457 174.23 411.931 154.791 427.972C152.888 429.477 147.032 434.62 144.796 434.908C133.28 436.392 145.963 407.791 147.15 404.411C161.19 364.43 178.804 325.701 198.373 288.161C203.311 278.93 208.254 269.688 213.174 260.46C214.799 257.412 218.471 253.609 217.685 250.11C217.282 247.722 212.817 246.094 211.03 247.468C206.145 251.226 201.325 258.918 197.574 263.802C170.307 299.307 149.949 339.078 131.922 379.886C124.174 397.425 116.711 414.697 110.303 432.786C110.52 431.067 110.787 429.193 111.084 427.49C113.475 413.77 113.188 399.643 115.038 385.917C124.282 317.311 152.084 251.268 192.778 195.42C199.297 186.473 206.323 178.009 213.432 169.533C229.328 150.058 246.464 132.161 265.342 115.557C280.638 102.103 295.655 89.2338 312.947 78.3205Z"/>
+<path fill="#3B82F6" d="M139.144 510.123L139.857 510.084C146.242 509.751 153.482 509.904 159.928 509.906L192.535 509.918L292.422 509.913L348.363 509.923C360.197 509.879 374.28 509.165 385.838 510.901C404.899 513.763 422.251 525.328 430.877 542.751C437.406 555.937 437.989 569.315 437.86 583.804C437.941 596.769 439.879 607.584 422.768 607.893C409.674 608.248 396.079 607.907 382.927 607.971C377.175 607.757 370.555 608.396 364.945 607.195C353.788 604.754 354.297 587.606 365.377 585.663C369.541 584.934 376.925 585.363 381.225 585.367L412.927 585.282C413.09 570.119 413.936 557.412 401.592 546.312C396.817 542.018 386.881 533.568 380.167 534.191C370.368 535.102 358.768 542.344 351.86 549.231C338.404 562.762 340.658 578.251 340.472 595.59C340.282 613.263 355.371 627.194 370.961 632.995C379.991 636.355 393.443 635.522 403.17 635.519L429.718 635.536C436.374 635.543 445.66 634.134 450.704 639.157C457.753 646.177 453.13 658.364 443.402 659.584C440.639 659.931 437.692 659.666 434.893 659.652L419.254 659.639L359.721 659.638L144.905 659.656L78.1934 659.65L57.1826 659.682C53.3403 659.688 49.2143 659.846 45.4454 659.543C36.7178 658.731 31.9047 649.416 36.081 641.761C40.2922 634.042 49.833 635.512 57.4105 635.518L76.8438 635.546L136.482 635.557L331.56 635.503C317.931 621.169 315.44 603.245 315.471 584.544C315.508 561.758 318.861 552.383 331.695 534.314C326.285 534.562 317.853 534.153 312.068 534.131L263.831 533.928L183.116 533.843C169.803 533.822 156.455 533.836 143.14 533.808C140.645 533.606 137.836 533.903 135.582 532.657C128.03 528.486 126.632 518.389 133.334 512.737C135.225 511.143 136.711 510.681 139.144 510.123Z"/>
+</svg>
 </p>
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# 📚 Klio
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Klio** ist eine einfache, moderne Lösung für die Abgabe von Hausaufgaben und Übungen – ohne komplizierte Logins, ohne unnötigen Schnickschnack.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Der Name stammt von der griechischen Muse **Klio (Κλειώ)**, der Muse der Geschichtsschreibung. Sie steht symbolisch für das **Festhalten und Dokumentieren** – genau das, was dieses Projekt für Schüler:innen und Lehrkräfte tut: Aufgaben einreichen, dokumentieren und organisieren.
 
-## Learning Laravel
+Klio ist ein rewrite von consa, das vor einigen Jahren entwickelt wurde, dass ich meine Aufsätze online schreiben und abgeben darf (weil meine Lehrperson keine Lust auf Mails / Teams hatte).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## ✨ Warum Klio?
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- 🖊 **Einfachheit**: Schüler:innen müssen keine Konten erstellen, sondern geben ihre Arbeit schnell mit einem Code ab.
+- 📂 **Organisation**: Abgaben werden automatisch sortiert – nach Klasse, Aufgabe und Schüler:in.
+- 🔍 **Transparenz**: Lehrkräfte behalten den Überblick, ohne durch komplexe Plattformen navigieren zu müssen.
+- 👐 **Open Source**: Der gesamte Quellcode ist offen zugänglich, sodass jede:r nachvollziehen kann, was im Hintergrund passiert.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🎯 Ziel des Projekts
 
-### Premium Partners
+Das Ziel von **Klio** ist es, eine **praktische, schlanke und vertrauenswürdige Plattform** zu bieten, die sich sowohl für Schulen als auch für einzelne Lehrkräfte eignet.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Anstatt Zeit mit komplizierten LMS-Systemen oder langen Registrierungsprozessen zu verschwenden, soll Klio den Fokus wieder auf das Wesentliche legen:  
+➡️ **Schüler:innen geben ihre Aufgaben ab.**  
+➡️ **Lehrkräfte sehen, bewerten und verwalten diese einfach.**
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🚀 Features
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- ✅ Abgabe mit **Code** (kein Login nötig)
+- ✅ Automatische Organisation von Abgaben
+- ✅ Übersichtliche Oberfläche für Lehrkräfte
+- ✅ Open Source & transparent
