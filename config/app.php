@@ -123,4 +123,13 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'version' => env('APP_VERSION', 'dev'),
+    'commit'  => env('GIT_COMMIT', null),
+    'source_url' => env('SOURCE_CODE_URL', null),
+
+    'author' => [
+        'name'   => env('AUTHOR_NAME', 'Sprudeel'),
+        'github' => env('AUTHOR_GITHUB', null),
+    ],
+
 ];
