@@ -13,6 +13,7 @@
                     <span class="underline underline-offset-2">Source Code</span>
                 </a>
                 <span class="hidden sm:inline text-slate-300">|</span>
+                <span class="text-slate-300">•</span>
             @endif
 
             <span>Version <span class="font-medium text-slate-800">{{ $build['version'] }}</span></span>
