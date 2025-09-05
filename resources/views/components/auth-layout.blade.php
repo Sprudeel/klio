@@ -36,25 +36,31 @@
 
         {{-- Right: Nav menu --}}
         <div class="flex items-center gap-12">
-            <a href="/submission"
+            <a href="/"
                class="relative text-slate-600 font-medium transition-colors duration-200 hover:text-slate-900
               after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-slate-900
               after:transition-all after:duration-300 hover:after:w-full">
                 Abgabe
             </a>
-            <a href="/login"
+            <a href="/"
                class="relative text-slate-600 font-medium transition-colors duration-200 hover:text-slate-900
               after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-slate-900
               after:transition-all after:duration-300 hover:after:w-full">
-                Login
+                Profil
+            </a>
+            <a href="/"
+               class="relative text-slate-600 font-medium transition-colors duration-200 hover:text-slate-900
+              after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-slate-900
+              after:transition-all after:duration-300 hover:after:w-full">
+                Abmelden
             </a>
         </div>
     </nav>
 </header>
+
 <main>
     {{ $slot }}
 </main>
-
 
 @include('partials.footer')
 </body>
