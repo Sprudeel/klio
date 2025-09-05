@@ -27,12 +27,9 @@ class UserController extends Controller
         $recentSubs = $user->assignments()
             ->with(['submissions' => fn($q) => $q->latest('submitted_at')->limit(5)])
             ->get()
-            ->pluck('submissions')
-            ->flatten()
-            ->sortByDesc('submitted_at')
-            ->take(10);
+            ->sortByDesc('submitted_at');
 
-        return view('user.dashboard', compact('user', 'assignments', 'recentSubs'));
+        return view('dashboard', compact('user', 'assignments', 'recentSubs'));
     }
 
     /** Profile view */

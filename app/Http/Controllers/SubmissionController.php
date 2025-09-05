@@ -53,7 +53,7 @@ class SubmissionController extends Controller
         $file = $request->file('file');
 
         if (! $this->looksLikePdf($file->getRealPath())) {
-            return back()->withErrors(['file' => 'Die Datei ist keine gültige PDF.']);
+            return back()->withErrors(['file' => 'Die Datei ist kein gültiges PDF.']);
         }
 
         $path = $file->store("submissions/{$assignment->id}", 'private');
