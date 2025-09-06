@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 
@@ -29,7 +31,38 @@ class UserController extends Controller
             ->get()
             ->sortByDesc('submitted_at');
 
-        return view('dashboard', compact('user', 'assignments', 'recentSubs'));
+        $updatesPath = resource_path('data/updates.json');
+        $updates = [];
+        if (File::exists($updatesPath)) {
+            try {
+                $decoded = json_decode(File::get($updatesPath), true, 512, JSON_THROW_ON_ERROR);
+                $updates = collect($decoded)
+                    ->map(function ($u) {
+                        return [
+                            'type'  => Arr::get($u, 'type', 'misc'),
+                            'title' => Arr::get($u, 'title', ''),
+                            'desc'  => Arr::get($u, 'desc', ''),
+                            'tag'   => Arr::get($u, 'tag', null),
+                            'date'  => Arr::get($u, 'date', null),
+                        ];
+                    })
+                    ->sortByDesc(fn($u) => $u['date'] ?? '0000-00-00')
+                    ->values()
+                    ->all();
+            } catch (\Throwable $e) {
+                $updates = [];
+            }
+        }
+
+        // Optional: your $build array if you use it in the view
+        $build = [
+            'version'    => config('app.version') ?? 'dev',
+            'commit'     => config('app.commit_short') ?? null,
+            'source_url' => config('app.source_url') ?? null,
+            'env'        => app()->environment(),
+        ];
+
+        return view('dashboard', compact('user', 'assignments', 'recentSubs', 'updates', 'build'));
     }
 
     /** Profile view */

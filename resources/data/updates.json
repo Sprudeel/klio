@@ -1,0 +1,33 @@
+[
+    {
+        "type": "feature",
+        "title": "Sammel-PDF für Abgaben",
+        "desc": "Alle PDFs einer Aufgabe zu einem Dokument zusammenführen – ideal fürs Korrigieren.",
+        "tag": "Neu",
+        "date": "2025-09-05"
+    },
+    {
+        "type": "security",
+        "title": "Private Speicherung",
+        "desc": "Downloads nur über Policies, Dateien liegen auf dem privaten Storage.",
+        "tag": "Sicher"
+    },
+    {
+        "type": "fix",
+        "title": "Login-Validierung verbessert",
+        "desc": "Klarere Fehlermeldungen bei falschen Credentials.",
+        "tag": "Fix"
+    },
+    {
+        "type": "perf",
+        "title": "Schnelleres Laden der Aufgabenliste",
+        "desc": "Index-Queries optimiert, weniger DB-Last.",
+        "tag": "Perf"
+    },
+    {
+        "type": "docs",
+        "title": "Footer mit Version & Commit",
+        "desc": "Footer zeigt App-Version und 8-stelligen Commit-Hash.",
+        "tag": "Info"
+    }
+]
