@@ -24,7 +24,7 @@ jobs:
           key: ${{ secrets.DEV_SSH_KEY }}
           port: 22
           script: |
-            cd /www/dev.klio.lchsd.ch
+            cd www/dev.klio.lchsd.ch
             /usr/local/php84/bin/composer install
             /usr/local/php84/bin/php artisan migrate:fresh
             /usr/local/php84/bin/php artisan config:clear
