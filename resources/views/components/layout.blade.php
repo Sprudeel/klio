@@ -30,7 +30,7 @@
         {{-- Left: Logo + Name --}}
         <a href="{{ url('/') }}" class="flex items-center gap-3 group">
             {{-- Inline SVG logo (quill + scroll, black on white) --}}
-            <img class="w-8" src="{{ Vite::asset('resources/images/klio_logo.svg') }}" alt="Logo">
+            <img class="w-8" src="/images/klio_logo.svg" alt="Logo">
             <span class="text-2xl font-semibold tracking-tight">{{ $appName }}</span>
         </a>
 
