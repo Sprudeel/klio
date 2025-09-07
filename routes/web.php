@@ -16,6 +16,7 @@ Route::get('/login', function () {
 });
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
 
@@ -27,6 +28,7 @@ Route::middleware('auth')->group(function () {
 
     // Assignments
     Route::get('/assignments', [AssignmentController::class, 'index'])->name('assignments.index');
+    Route::get('/assignments/all', [AssignmentController::class, 'indexAll'])->name('assignments.index.all');
     Route::get('/assignments/create', [AssignmentController::class, 'create'])->name('assignments.create');
     Route::post('/assignments', [AssignmentController::class, 'store'])->name('assignments.store');
     Route::get('/assignments/{assignment}', [AssignmentController::class, 'show'])->name('assignments.show');
