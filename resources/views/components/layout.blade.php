@@ -39,7 +39,7 @@
             <span class="text-2xl font-semibold tracking-tight">{{ $appName }}</span>
         </a>
 
-        @if(!auth())
+        @if(!auth()->user())
         <div class="flex items-center gap-12">
             <a href="/submission"
                class="relative text-slate-600 font-medium transition-colors duration-200 hover:text-slate-900
@@ -56,14 +56,14 @@
         </div>
         @endif
 
-        @if(auth())
+        @if(auth()->user())
             <div class="flex items-center gap-12">
                 @if(auth()->user()->isAdmin())
                     <a href="/assignments/all"
                        class="relative text-blue-500 font-medium transition-colors duration-200 hover:text-blue-900
               after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-blue-900
               after:transition-all after:duration-300 hover:after:w-full">
-                        Alle Abgaben
+                        Alle Aufgaben
                     </a>
                 @endif
                     <a href="/dashboard"
@@ -76,7 +76,7 @@
                    class="relative text-slate-600 font-medium transition-colors duration-200 hover:text-slate-900
               after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-slate-900
               after:transition-all after:duration-300 hover:after:w-full">
-                    Meine Abgaben
+                    Meine Aufgaben
                 </a>
 
                 <a href="/profile"

@@ -13,13 +13,33 @@ class AssignmentController extends Controller
     /*
      * Show a specific assignment.
      */
-    public function show(Assignment $assignment)
+    public function show(Request $request, Assignment $assignment)
     {
         $this->authorize('view', $assignment);
 
-        $submissions = $assignment->submissions()
-            ->latest('submitted_at')
-            ->paginate(20);
+        $query = $assignment->submissions()->latest();
+
+        if ($q = $request->string('q')->toString()) {
+            $query->where(function ($qq) use ($q) {
+                $qq->where('name', 'like', "%{$q}%")
+                    ->orWhere('filename', 'like', "%{$q}%");
+            });
+        }
+
+        if ($status = $request->string('status')->toString()) {
+            $query->where('status', $status);
+        }
+
+        switch ($request->string('sort','latest')) {
+            case 'oldest': $query->oldest(); break;
+            case 'name':   $query->orderBy('name'); break;
+            default:       $query->latest(); break;
+        }
+
+        $submissions = $query->paginate(12);
+
+        // Eager count for header
+        $assignment->loadCount('submissions');
 
         return view('assignments.show', compact('assignment', 'submissions'));
     }
@@ -29,16 +49,29 @@ class AssignmentController extends Controller
      */
     public function index(Request $request)
     {
-        $q = $request->get('q');
+        $q    = $request->string('q')->toString();
+        $due  = $request->string('due')->toString();
+        $sort = $request->string('sort', 'deadline_asc')->toString();
 
         $assignments = Assignment::query()
-            ->where('author', Auth::id())
-            ->when($q, fn($qq) => $qq->where('name', 'like', "%{$q}%")->orWhere('code', 'like', "%{$q}%"))
-            ->latest('created_at')
-            ->paginate(15)
-            ->withQueryString();
+            ->where('isClosed', false)
+            ->where('author', $request->user()->id)
+            ->when($q, fn($qry) => $qry->where(function($qq) use ($q) {
+                $qq->where('name', 'like', "%{$q}%")
+                    ->orWhere('code', 'like', "%{$q}%")
+                    ->orWhere('description', 'like', "%{$q}%");
+            }))
+            ->when($due === 'today', fn($qry) => $qry->whereBetween('deadline', [now()->startOfDay(), now()->endOfDay()]))
+            ->when($due === 'week', fn($qry) => $qry->whereBetween('deadline', [now()->startOfWeek(), now()->endOfWeek()]))
+            ->when($due === 'overdue', fn($qry) => $qry->where('deadline', '<', now()))
+            ->when($sort === 'deadline_asc',  fn($qry) => $qry->orderBy('deadline', 'asc'))
+            ->when($sort === 'deadline_desc', fn($qry) => $qry->orderBy('deadline', 'desc'))
+            ->when($sort === 'created_desc',  fn($qry) => $qry->orderBy('id', 'desc'))
+            ->when($sort === 'created_asc',   fn($qry) => $qry->orderBy('id', 'asc'))
+            ->withCount('submissions')
+            ->paginate(12);
 
-        return view('assignments.index', compact('assignments', 'q'));
+        return view('assignments.index', compact('assignments'));
     }
 
     public function indexAll(Request $request)

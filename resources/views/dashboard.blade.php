@@ -22,7 +22,7 @@
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 7h16M4 12h10M4 17h16"/>
                     </svg>
-                    Meine Abgaben
+                    Meine Aufgaben
                 </a>
             </div>
         </div>
@@ -31,7 +31,7 @@
         <div class="relative mt-16 flex">
             <div class="mx-auto min-w-2/3">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-semibold">Deine neuesten Abgaben</h2>
+                    <h2 class="text-xl font-semibold">Deine neuesten Aufgaben</h2>
                     <a href="{{ route('assignments.index') }}" class="text-sm text-indigo-600 hover:underline">Alle ansehen</a>
                 </div>
 
@@ -41,7 +41,7 @@
 
                 @if($latest->isEmpty())
                     <div class="mt-4 rounded-2xl border border-dashed border-slate-300 p-8 text-center">
-                        <p class="text-slate-600">Noch keine Abgaben erstellt.</p>
+                        <p class="text-slate-600">Noch keine Aufgaben erstellt.</p>
                         <a href="{{ route('assignments.create') }}"
                            class="mt-3 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-slate-800">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
