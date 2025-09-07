@@ -24,7 +24,8 @@
     </style>
     <title>klio</title>
 </head>
-<body class="bg-white text-slate-900 antialiased">
+<body class="bg-white text-slate-900 antialiased ">
+<div class="min-h-screen">
 <header class="border-b border-slate-200">
     <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
         {{-- Left: Logo + Name --}}
@@ -36,19 +37,28 @@
 
         {{-- Right: Nav menu --}}
         <div class="flex items-center gap-12">
-            <a href="/"
+            @if(auth()->user()->isAdmin())
+                <a href="/assignments/all"
+                   class="relative text-blue-500 font-medium transition-colors duration-200 hover:text-blue-900
+              after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-blue-900
+              after:transition-all after:duration-300 hover:after:w-full">
+                    Alle Abgaben
+                </a>
+            @endif
+            <a href="/assignments"
                class="relative text-slate-600 font-medium transition-colors duration-200 hover:text-slate-900
               after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-slate-900
               after:transition-all after:duration-300 hover:after:w-full">
-                Abgabe
+                Meine Abgaben
             </a>
-            <a href="/"
+
+            <a href="/profile"
                class="relative text-slate-600 font-medium transition-colors duration-200 hover:text-slate-900
               after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-slate-900
               after:transition-all after:duration-300 hover:after:w-full">
                 Profil
             </a>
-            <a href="/"
+            <a href="/logout"
                class="relative text-slate-600 font-medium transition-colors duration-200 hover:text-slate-900
               after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-slate-900
               after:transition-all after:duration-300 hover:after:w-full">
@@ -61,7 +71,7 @@
 <main>
     {{ $slot }}
 </main>
-
+</div>
 @include('partials.footer')
 </body>
 </html>
