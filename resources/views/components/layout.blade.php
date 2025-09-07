@@ -1,8 +1,13 @@
+<!DOCTYPE html>
+<html lang="de">
 @php
     $appName = "klio";
 @endphp
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ $title ?? 'klio' }}</title>
     @vite(['resources/css/app.css','resources/js/app.js'])
     <title>{{ $appName }}</title>
     <meta charset="utf-8">
