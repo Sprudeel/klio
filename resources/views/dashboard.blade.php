@@ -1,4 +1,4 @@
-<x-auth-layout>
+<x-layout>
     <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         <div class="flex gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
@@ -57,17 +57,18 @@
                                class="group block rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                                 <div class="flex items-start justify-between">
                                     <div>
-                                        <div class="text-sm uppercase tracking-wide text-slate-500">Code</div>
-                                        <div class="mt-0.5 font-mono text-slate-900">{{ $a->code }}</div>
+                                        <h2 class="text-2xl font-semibold text-slate-900 group-hover:text-slate-900/90">
+                                            {{ $a->name }}
+                                        </h2>
                                     </div>
                                     @if($a->color)
                                         <span class="inline-flex h-6 min-w-6 items-center justify-center rounded-full px-2 text-xs"
                                               style="background-color: {{ $a->color }}20; color: {{ $a->color }}">●</span>
                                     @endif
                                 </div>
-                                <h3 class="mt-3 text-lg font-semibold text-slate-900 group-hover:text-slate-900/90">
-                                    {{ $a->name }}
-                                </h3>
+
+                                <div class="text-sm tracking-wide text-slate-500">Code: <span class="font-mono text-slate-900">{{ $a->code }}</span></div>
+
                                 <div class="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-600">
                                     @if($a->deadline)
                                         <span class="inline-flex items-center gap-1">
@@ -92,4 +93,4 @@
         @include('partials.updates')
 
     </section>
-</x-auth-layout>
+</x-layout>

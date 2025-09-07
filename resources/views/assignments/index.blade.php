@@ -1,3 +1,3 @@
-<x-auth-layout>
+<x-layout>
    Hello from index!
-</x-auth-layout>
+</x-layout>
