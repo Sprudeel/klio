@@ -21,10 +21,11 @@ jobs:
         with:
           host: ${{ secrets.DEV_SSH_HOST }}
           username: ${{ secrets.DEV_SSH_USER }}
-          password: ${{ secrets.DEV_SSH_PASSWORD }}
+          key: ${{ secrets.DEV_SSH_KEY }}
           port: 22
           script: |
             cd /var/www/${{ secrets.DEV_DOMAIN }}
+            /usr/local/php84/bin/composer install
             /usr/local/php84/bin/php artisan migrate:fresh
             /usr/local/php84/bin/php artisan config:clear
             /usr/local/php84/bin/php artisan route:clear
