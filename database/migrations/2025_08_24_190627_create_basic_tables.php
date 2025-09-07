@@ -23,6 +23,7 @@ return new class extends Migration
             $table->boolean('isClosed')->default(false);
             $table->string('color', 32)->nullable();
             $table->string('icon', 64)->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
 

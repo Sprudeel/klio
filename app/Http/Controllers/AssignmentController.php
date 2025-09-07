@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Assignment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class AssignmentController extends Controller
@@ -30,7 +32,7 @@ class AssignmentController extends Controller
         $q = $request->get('q');
 
         $assignments = Assignment::query()
-            ->where('author_id', Auth::id())
+            ->where('author', Auth::id())
             ->when($q, fn($qq) => $qq->where('name', 'like', "%{$q}%")->orWhere('code', 'like', "%{$q}%"))
             ->latest('created_at')
             ->paginate(15)
@@ -74,8 +76,8 @@ class AssignmentController extends Controller
             'description' => ['nullable', 'string'],
         ]);
 
-        $data['author_id'] = Auth::id();
-        $data['code']      = $data['code'] ?? Str::upper(Str::random(8));
+        $data['author'] = auth()->id();
+        $data['code'] = $data['code'] ?? Str::upper(Str::random(8));
 
         $assignment = Assignment::create($data);
 

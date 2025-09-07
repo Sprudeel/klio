@@ -10,7 +10,7 @@ class Assignment extends Model
         'name',
         'code',
         'deadline',
-        'author_id',
+        'author',
         'is_closed',
         'closed_at',
         'color',
@@ -31,7 +31,7 @@ class Assignment extends Model
 
     public function submissions()
     {
-        return $this->hasMany(Submission::class);
+        return $this->hasMany(Submission::class, 'code', 'code');
     }
 
     public function getIsActiveAttribute(): bool
