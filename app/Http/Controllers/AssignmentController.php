@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Assignment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use Illuminate\View\View;
 
 class AssignmentController extends Controller
 {
@@ -54,8 +56,7 @@ class AssignmentController extends Controller
         $sort = $request->string('sort', 'deadline_asc')->toString();
 
         $assignments = Assignment::query()
-            ->where('isClosed', false)
-            ->where('author', $request->user()->id)
+            ->where('author_id', $request->user()->id)
             ->when($q, fn($qry) => $qry->where(function($qq) use ($q) {
                 $qq->where('name', 'like', "%{$q}%")
                     ->orWhere('code', 'like', "%{$q}%")
@@ -71,19 +72,22 @@ class AssignmentController extends Controller
             ->withCount('submissions')
             ->paginate(12);
 
-        return view('assignments.index', compact('assignments'));
+        return view('assignments.index', compact('assignments'), ['all' => false]);
     }
 
     public function indexAll(Request $request)
     {
+        Gate::authorize('viewAny', Assignment::class);
+
         $q = $request->get('q');
 
         $assignments = Assignment::query()
             ->latest('created_at')
+            ->with(['author:id,name'])
             ->paginate(15)
             ->withQueryString();
 
-        return view('assignments.index', compact('assignments', 'q'));
+        return view('assignments.index', compact('assignments', 'q'), ['all' => true]);
     }
 
 
@@ -138,10 +142,21 @@ class AssignmentController extends Controller
             'color'       => ['nullable', 'string', 'max:32'],
             'icon'        => ['nullable', 'string', 'max:64'],
             'description' => ['nullable', 'string'],
-            'is_closed'   => ['sometimes', 'boolean'],
         ]);
 
-        $assignment->update($data);
+        $originalCode = $assignment->getOriginal('code');
+
+        DB::transaction(function () use ($assignment, $data, $originalCode) {
+            $assignment->update($data);
+
+            if (isset($data['code']) && $data['code'] !== $originalCode) {
+                    if (Schema::hasColumn('submissions', 'code')) {
+                        DB::table('submissions')
+                            ->where('code', $originalCode)
+                            ->update(['code' => $data['code']]);
+                    }
+            }
+        });
 
         return redirect()->route('assignments.show', $assignment)
             ->with('success', 'Aufgabe aktualisiert.');
@@ -153,7 +168,7 @@ class AssignmentController extends Controller
         $this->authorize('update', $assignment);
 
         $assignment->update([
-            'is_closed' => true,
+            'isClosed' => true,
             'closed_at' => now(),
         ]);
 
@@ -166,7 +181,7 @@ class AssignmentController extends Controller
         $this->authorize('update', $assignment);
 
         $assignment->update([
-            'is_closed' => false,
+            'isClosed' => false,
             'closed_at' => null,
         ]);
 
