@@ -48,12 +48,11 @@
                             value="{{ old('code') }}"
                             error_message="@error('code'){{$errors->first('code') }}@enderror"
                         />
-                        <p class="mt-1 text-xs text-slate-500">Teile diesen Code mit deinen Schüler:innen.</p>
+                        <p class="mt-1 text-xs text-slate-500">Teile diesen Code mit deinen Schüler:innen. Wenn du dieses Feld leer lässt wird automatisch ein Code erstellt.</p>
                     </div>
 
                     {{-- Deadline --}}
                     <div>
-                        {{-- If you have Bladewind datetimepicker, swap the input below for it. --}}
                         <x-bladewind::input
                             type="date"
                             name="deadline"
