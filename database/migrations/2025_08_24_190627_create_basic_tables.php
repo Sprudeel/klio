@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('code', 8)->unique();
             $table->dateTime('deadline')->nullable();
-            $table->foreignIdFor(User::class, 'author')
+            $table->foreignIdFor(User::class, 'author_id')
                 ->constrained('users')
                 ->cascadeOnDelete();
             $table->boolean('isClosed')->default(false);
