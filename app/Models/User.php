@@ -54,6 +54,6 @@ class User extends Authenticatable
 
     public function assignments(): HasMany
     {
-        return $this->hasMany(Assignment::class, 'author');
+        return $this->hasMany(Assignment::class, 'author_id');
     }
 }
