@@ -7,13 +7,18 @@ use App\Models\User;
 
 class AssignmentPolicy
 {
-    /** See ones assignment */
+    /** See one assignment */
     public function view(User $user, Assignment $assignment): bool
     {
         return $user->id === $assignment->author_id || $user->isAdmin();
     }
 
-    /** See all assignments */
+    /** See ones assignments */
+    public function index(): bool {
+        return true;
+    }
+
+    /** See ALL assignments */
     public function viewAny(User $user): bool
     {
         return $user->isAdmin();
@@ -33,17 +38,6 @@ class AssignmentPolicy
 
     /** Delete assignment */
     public function delete(User $user, Assignment $assignment): bool
-    {
-        return $user->id === $assignment->author  || $user->isAdmin();
-    }
-
-    /** (Optional) Restore / force delete if you use soft deletes on assignments */
-    public function restore(User $user, Assignment $assignment): bool
-    {
-        return $user->id === $assignment->author  || $user->isAdmin();
-    }
-
-    public function forceDelete(User $user, Assignment $assignment): bool
     {
         return $user->id === $assignment->author  || $user->isAdmin();
     }

@@ -17,7 +17,7 @@ class AssignmentController extends Controller
      */
     public function show(Request $request, Assignment $assignment)
     {
-        $this->authorize('view', $assignment);
+        Gate::authorize('view', [$assignment]);
 
         $query = $assignment->submissions()->latest();
 
@@ -51,6 +51,8 @@ class AssignmentController extends Controller
      */
     public function index(Request $request)
     {
+        Gate::authorize('index', Assignment::class);
+
         $q    = $request->string('q')->toString();
         $due  = $request->string('due')->toString();
         $sort = $request->string('sort', 'deadline_asc')->toString();
@@ -96,6 +98,8 @@ class AssignmentController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', Assignment::class);
+
         return view('assignments.create');
     }
 
@@ -104,6 +108,8 @@ class AssignmentController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', Assignment::class);
+
         $data = $request->validate([
             'name'        => ['required', 'string', 'max:255'],
             'code'        => ['nullable', 'string', 'max:32', 'unique:assignments,code'],
@@ -113,7 +119,7 @@ class AssignmentController extends Controller
             'description' => ['nullable', 'string'],
         ]);
 
-        $data['author'] = auth()->id();
+        $data['author_id'] = auth()->id();
         $data['code'] = $data['code'] ?? Str::upper(Str::random(8));
 
         $assignment = Assignment::create($data);
@@ -127,13 +133,14 @@ class AssignmentController extends Controller
      */
     public function edit(Assignment $assignment)
     {
-        $this->authorize('update', $assignment);
+        Gate::authorize('update', $assignment);
+
         return view('assignments.edit', compact('assignment'));
     }
 
     public function update(Request $request, Assignment $assignment)
     {
-        $this->authorize('update', $assignment);
+        Gate::authorize('update', $assignment);
 
         $data = $request->validate([
             'name'        => ['required', 'string', 'max:255'],
@@ -165,7 +172,7 @@ class AssignmentController extends Controller
     /** Close assignment (lock new submissions) */
     public function close(Assignment $assignment)
     {
-        $this->authorize('update', $assignment);
+        Gate::authorize('update', $assignment);
 
         $assignment->update([
             'isClosed' => true,
@@ -178,7 +185,7 @@ class AssignmentController extends Controller
     /** Open assignment (allow submissions) */
     public function open(Assignment $assignment)
     {
-        $this->authorize('update', $assignment);
+        Gate::authorize('update', $assignment);
 
         $assignment->update([
             'isClosed' => false,
@@ -191,7 +198,7 @@ class AssignmentController extends Controller
     /** Delete (cascades will remove submissions if set) */
     public function destroy(Assignment $assignment)
     {
-        $this->authorize('delete', $assignment);
+        Gate::authorize('delete', $assignment);
 
         $assignment->delete();
 
