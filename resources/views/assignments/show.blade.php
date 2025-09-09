@@ -10,7 +10,7 @@
                                   style="background-color: {{ $assignment->color }}20; color: {{ $assignment->color }}">●</span>
                         @endif
                         <h1 class="truncate text-2xl sm:text-3xl font-bold text-slate-900">
-                            {{ $assignment->name }}
+                            {{ $assignment->icon }} {{ $assignment->name }}
                         </h1>
                     </div>
                     <div class="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-600">
@@ -29,10 +29,10 @@
                     Code: <span class="font-mono text-slate-900">{{ $assignment->code }}</span>
                 </span>
 
-                        @if($assignment->is_closed)
-                            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-red-700">geschlossen</span>
+                        @if($assignment->isClosed)
+                            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-red-700">geschlossen</span>
                         @else
-                            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700">offen</span>
+                            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700">offen</span>
                         @endif
                     </div>
                     @if($assignment->description)
@@ -112,7 +112,7 @@
                     <label class="sr-only" for="q">Suche</label>
                     <div class="relative">
                         <input id="q" name="q" value="{{ request('q') }}" placeholder="Nach Name, Datei…"
-                               class="w-full rounded-xl border-slate-200 focus:border-indigo-400 focus:ring-indigo-400 pl-10" />
+                               class="w-full rounded-xl border-slate-200 focus:border-blue-400 focus:ring-blue-400 pl-10" />
                         <svg class="pointer-events-none absolute right-2 top-2.5 -translate-y-1/2 h-5 w-5 text-slate-400"
                              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
@@ -121,28 +121,17 @@
                 </div>
 
                 <div>
-                    <label class="sr-only" for="status">Status</label>
-                    <select id="status" name="status" onchange="this.form.requestSubmit()"
-                            class="w-full rounded-xl border-slate-200 focus:border-indigo-400 focus:ring-indigo-400">
-                        <option value="">Alle</option>
-                        <option value="new" @selected(request('status')==='new')>Neu</option>
-                        <option value="reviewed" @selected(request('status')==='reviewed')>Gesehen</option>
-                        <option value="graded" @selected(request('status')==='graded')>Bewertet</option>
-                    </select>
-                </div>
-
-                <div>
                     <label class="sr-only" for="sort">Sortierung</label>
                     <select id="sort" name="sort" onchange="this.form.requestSubmit()"
-                            class="w-full rounded-xl border-slate-200 focus:border-indigo-400 focus:ring-indigo-400">
+                            class="w-full rounded-xl border-slate-200 focus:border-blue-400 focus:ring-blue-400">
                         <option value="latest" @selected(request('sort','latest')==='latest')>Neueste zuerst</option>
                         <option value="oldest" @selected(request('sort')==='oldest')>Älteste zuerst</option>
                         <option value="name" @selected(request('sort')==='name')>Name A–Z</option>
                     </select>
                 </div>
 
-                <div class="flex gap-3">
-                    <button class="rounded-xl bg-indigo-600 px-4 py-2.5 text-white hover:bg-indigo-700">Filtern</button>
+                <div class="flex gap-3 place-self-end lg:col-span-2">
+                    <button class="rounded-xl bg-blue-600 px-4 py-2.5 text-white hover:bg-blue-700">Filtern</button>
                     <a href="{{ route('assignments.show', $assignment) }}" class="rounded-xl border border-slate-200 px-4 py-2.5 hover:bg-slate-50">Zurücksetzen</a>
                 </div>
             </form>
@@ -230,7 +219,7 @@
 
                                         {{-- Edit meta (e.g., status, name) --}}
                                         <a href="{{ route('submissions.edit', $s) }}"
-                                           class="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-white hover:bg-indigo-700"
+                                           class="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1.5 text-white hover:bg-blue-700"
                                            title="Bearbeiten">
                                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>

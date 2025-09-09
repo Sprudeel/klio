@@ -11,7 +11,7 @@
             </div>
             <div class="flex flex-wrap gap-3">
                 <a href="{{ route('assignments.create') }}"
-                   class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                   class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
@@ -32,7 +32,7 @@
             <div class="mx-auto min-w-2/3">
                 <div class="flex items-center justify-between">
                     <h2 class="text-xl font-semibold">Deine neuesten Aufgaben</h2>
-                    <a href="{{ route('assignments.index') }}" class="text-sm text-indigo-600 hover:underline">Alle ansehen</a>
+                    <a href="{{ route('assignments.index') }}" class="text-sm text-blue-600 hover:underline">Alle ansehen</a>
                 </div>
 
                 @php
