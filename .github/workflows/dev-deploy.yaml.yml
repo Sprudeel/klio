@@ -46,4 +46,9 @@ jobs:
             /usr/local/php84/bin/php artisan route:clear
             /usr/local/php84/bin/php artisan cache:clear
             /usr/local/php84/bin/php artisan db:Seed
-
+            mkdir -p public/vendor/bladewind/js public/vendor/bladewind/css
+            cp -f vendor/mkocansey/bladewind/public/js/helpers.js public/vendor/bladewind/js/
+            cp -f vendor/mkocansey/bladewind/public/css/bladewind-ui.min.css public/vendor/bladewind/css/
+            cp -f vendor/mkocansey/bladewind/public/css/animate.min.css public/vendor/bladewind/css/
+            find public/vendor/bladewind -type d -exec chmod 755 {} \;
+            find public/vendor/bladewind -type f -exec chmod 644 {} \;
