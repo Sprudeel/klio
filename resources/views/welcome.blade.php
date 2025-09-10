@@ -42,7 +42,7 @@
 
             <div class="relative grid sm:grid-cols-2 gap-6">
                 {{-- Left: Abgaben ansehen --}}
-                <a href="/"
+                <a href="/assignments"
                    class="group block rounded-xl border border-slate-200 p-6 hover:border-indigo-300 hover:shadow-sm transition-all bg-white relative">
                     <div class="flex items-start gap-4">
                         <div class="mt-1 h-6 w-6 text-blue-500">
@@ -59,16 +59,10 @@
                             </p>
                         </div>
                     </div>
-                    {{-- Left curly arrow --}}
-                    <svg class="hidden sm:block absolute -right-20 top-1/2 -translate-y-1/2 w-20 h-20 text-blue-400"
-                         viewBox="0 0 200 200" fill="none" stroke="black" stroke-width="4">
-                        <path d="M10,100 C60,30 140,170 190,100" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M180,90 l15,10 -15,10" fill="currentColor"/>
-                    </svg>
                 </a>
 
                 {{-- Right: Abgabe erstellen --}}
-                <a href="/"
+                <a href="/submission"
                    class="group block rounded-xl border border-slate-200 p-6 hover:border-indigo-300 hover:shadow-sm transition-all bg-white relative">
                     <div class="flex items-start gap-4">
                         <div class="mt-1 h-6 w-6 text-blue-500">
@@ -83,12 +77,6 @@
                             </p>
                         </div>
                     </div>
-                    {{-- Right curly arrow --}}
-                    <svg class="hidden sm:block absolute -left-20 top-1/2 -translate-y-1/2 w-20 h-20 text-blu-400"
-                         viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="4">
-                        <path d="M190,100 C140,30 60,170 10,100" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M20,90 l-15,10 15,10" fill="currentColor"/>
-                    </svg>
                 </a>
             </div>
         </div>
