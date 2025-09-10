@@ -125,7 +125,7 @@
 
                         </h3>
                         <p class="mt-1 text-slate-600">
-                            Der Source Code ist öffentlich. Du weißt also, was im Hintergrund passiert. Entwickelt mit &lt;3.
+                            Der Source Code ist öffentlich. Du weisst also, was im Hintergrund passiert. Entwickelt mit &lt;3.
                         </p>
 
                         <a href="https://github.com/Sprudeel/klio" target="_blank" rel="noopener noreferrer"

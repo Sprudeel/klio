@@ -13,6 +13,30 @@ jobs:
       - name: 🚚 Checkout
         uses: actions/checkout@v4
 
+      - name: Derive version + short sha
+        id: meta
+        shell: bash
+        run: |
+          echo "GIT_SHA_SHORT=${GITHUB_SHA::8}" >> "$GITHUB_ENV"
+          APP_VERSION=$(grep -E '^APP_VERSION=' .env.example | cut -d= -f2- | tr -d '"' || true)
+          echo "APP_VERSION=${APP_VERSION:-0.0.0}" >> "$GITHUB_ENV"
+          APP_ENV_FILE=$(grep -E '^APP_ENV=' .env.example | cut -d= -f2- | tr -d '"' || true)
+          echo "APP_ENV=${APP_ENV}" >> "$GITHUB_ENV"
+
+
+      - name: Write version.json
+        shell: bash
+        run: |
+          mkdir -p public/build
+          cat > public/build/version.json <<JSON
+          {
+            "version": "${APP_VERSION}",
+            "sha": "${GIT_SHA_SHORT}",
+            "env": "$APP_ENV"
+            "built_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          JSON
+
       - name: Use Node
         uses: actions/setup-node@v4
         with:

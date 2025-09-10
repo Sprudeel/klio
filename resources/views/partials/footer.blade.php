@@ -1,9 +1,12 @@
+@php
+$source = "https://github.com/Sprudeel/klio"
+@endphp
+
 <footer class="mt-16 border-t border-slate-200 bg-white/60 backdrop-blur">
     <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
         {{-- Left: repo + version/commit --}}
         <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-            @if (!empty($build['source_url']))
-                <a href="{{ $build['source_url'] }}" target="_blank" rel="noopener noreferrer"
+                <a href="{{ $source }}" target="_blank" rel="noopener noreferrer"
                    class="inline-flex items-center gap-2 hover:text-slate-900 transition-colors">
                     {{-- GitHub mark --}}
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -14,25 +17,24 @@
                 </a>
                 <span class="hidden sm:inline text-slate-300">|</span>
                 <span class="text-slate-300">•</span>
-            @endif
 
-            <span>Version <span class="font-medium text-slate-800">{{ $build['version'] }}</span></span>
+            <span>Version <span class="font-medium text-slate-800">{{ $appVersion['version'] }}</span></span>
 
-            @if (!empty($build['commit']))
+            @if (!empty($appVersion['sha']))
                 <span class="text-slate-300">•</span>
                 @php
-                    $commitUrl = $build['source_url']
-                        ? rtrim($build['source_url'], '/').'/commit/'.$build['commit']
+                    $commitUrl = $source
+                        ? rtrim($source, '/').'/commit/'.$appVersion['sha']
                         : null;
                 @endphp
                 @if ($commitUrl)
                     <a href="{{ $commitUrl }}" target="_blank" rel="noopener noreferrer"
                        class="font-mono text-xs text-slate-700 hover:text-slate-900 transition-colors"
-                       title="Git Commit {{ $build['commit'] }}">
-                        {{ $build['commit'] }}
+                       title="Git Commit {{ $appVersion['sha'] }}">
+                        {{ $appVersion['sha'] }}
                     </a>
                 @else
-                    <span class="font-mono text-xs">{{ $build['commit'] }}</span>
+                    <span class="font-mono text-xs">{{ $appVersion['sha'] }}</span>
                 @endif
             @endif
         </div>
@@ -42,19 +44,13 @@
             <span class="text-slate-500">© {{ now()->year }} klio</span>
             <span class="text-slate-300">•</span>
             <span>Made by
-                @if(!empty($build['author']['github']))
-                    <a href="{{ $build['author']['github'] }}" target="_blank" rel="noopener noreferrer"
+                    <a href="https://github.com/Sprudeel" target="_blank" rel="noopener noreferrer"
                        class="font-medium text-slate-800 hover:text-slate-900 underline underline-offset-2">
-                        {{ $build['author']['name'] }}
+                        Sprudeel
                     </a>
-                @else
-                    <span class="font-medium text-slate-800">{{ $build['author']['name'] }}</span>
-                @endif
             </span>
-            @if (app()->environment() !== 'production')
                 <span class="text-slate-300">•</span>
-                <span class="uppercase tracking-wide text-xs text-slate-500">{{ $build['env'] }}</span>
-            @endif
+                <span class="uppercase tracking-wide text-xs text-slate-500">{{ $appVersion['env'] }}</span>
         </div>
     </div>
 </footer>
