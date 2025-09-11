@@ -52,5 +52,6 @@ Route::middleware('auth')->group(function () {
 
 
 //  public intake page by assignment code:
-Route::get('/submit/{assignment:code}', [SubmissionController::class, 'createPublic'])->name('assignments.intake');
-Route::post('/submit/{assignment:code}', [SubmissionController::class, 'store'])->name('assignments.submit');
+Route::get('/submit/{code?}', [SubmissionController::class, 'create'])->name('assignments.intake');
+Route::post('/submit', [SubmissionController::class, 'store'])->name('assignments.submit');
+Route::get('/submitted', [SubmissionController::class, 'submitted'])->name('assignments.submitted');
