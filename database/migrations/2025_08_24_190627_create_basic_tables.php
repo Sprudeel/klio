@@ -30,8 +30,11 @@ return new class extends Migration
         Schema::create('submissions', function (Blueprint $table) {
             $table->id();
             $table->string('student_name');
-            $table->foreignId('code')
-                ->constrained('assignments')
+            $table->string('code', 8);
+            $table->foreign('code')
+                ->references('code')
+                ->on('assignments')
+                ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
             $table->string('original_filename');
