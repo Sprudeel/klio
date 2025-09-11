@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Assignment;
 use App\Models\Submission;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use iio\libmergepdf\Merger;
 
@@ -33,20 +33,27 @@ class SubmissionController extends Controller
     }
 
     /** Public form to submit */
-    public function createPublic(Assignment $assignment)
+    public function create(Request $request)
     {
-        abort_if($assignment->is_closed || ($assignment->deadline && now()->greaterThan($assignment->deadline)), 403, 'Abgabe geschlossen.');
+        if($request->code != "") {
+            $assignment = Assignment::query()->where('code', 'like', "%$request->code%")->firstOrFail();
+        } else {
+            $assignment = null;
+        }
+
         return view('submissions.create', compact('assignment'));
     }
 
     /** Store (private disk) */
-    public function store(Request $request, Assignment $assignment)
+    public function store(Request $request)
     {
-        abort_if($assignment->is_closed, 403, 'Abgabe geschlossen.');
+        $assignment = Assignment::query()->where('code', '=', $request->code)->firstOrFail();
+
+        abort_if($assignment->isClosed, 403, 'Abgabe geschlossen.');
 
         $data = $request->validate([
-            'student_name'  => ['nullable', 'string', 'max:255'],
-            'student_email' => ['nullable', 'email', 'max:255'],
+            'student_name'  => ['required', 'string', 'max:255'],
+            'code'          => ['required', 'string', 'max:255'],
             'file'          => ['required','file','mimes:pdf','mimetypes:application/pdf','max:20480'],
         ]);
 
@@ -56,21 +63,31 @@ class SubmissionController extends Controller
             return back()->withErrors(['file' => 'Die Datei ist kein gültiges PDF.']);
         }
 
-        $path = $file->store("submissions/{$assignment->id}", 'private');
+        $path = $file->store("submissions/{$assignment->code}", 'private');
 
         $submission = $assignment->submissions()->create([
-            'student_name'      => $data['student_name'] ?? auth()->user()->name ?? null,
+            'student_name'      => $data['student_name'] ,
             'original_filename' => $file->getClientOriginalName(),
             'storage_path'      => $path,
             'file_size'         => $file->getSize(),
-            'mime_type'         => $file->getMimeType(), // should be application/pdf
+            'mime_type'         => $file->getMimeType(),
             'checksum'          => hash_file('sha256', $file->getRealPath()),
             'submitted_at'      => now(),
         ]);
 
         return redirect()
-            ->route('assignments.show', $assignment)
-            ->with('success', "Abgabe gespeichert ({$submission->code}).");
+            ->route('assignments.submitted',
+                [
+                    'assignment' => $assignment->name,
+                    'author' => $assignment->author()->first()->name,
+                    'student_name' => $request->student_name,
+                    'file_name' => $file->getClientOriginalName(),
+                    'submitted_at' => $submission->submitted_at,
+                ]);
+    }
+
+    public function submitted(Request $request) {
+        return view('submissions.submitted', compact('request'));
     }
 
     /** Tiny header check for PDF magic bytes. */
