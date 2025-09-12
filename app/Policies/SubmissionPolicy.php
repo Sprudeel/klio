@@ -16,9 +16,8 @@ class SubmissionPolicy
     /** See one submission (or download) */
     public function view(User $user, Submission $submission): bool
     {
-        // Author of the assignment OR the student who submitted (by email)
-        return $user->id === $submission->assignment->author_id
-            || ($submission->student_email && strcasecmp($user->email, $submission->student_email) === 0);
+        // Author of the assignment
+        return $user->id === $submission->assignment->author_id;
     }
 
     /** Download uses same rule as view */

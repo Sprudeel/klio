@@ -105,36 +105,6 @@
                 </div>
             </div>
 
-            {{-- Submissions Filter/Search --}}
-            <form id="subsFiltersForm" method="GET" action="{{ route('assignments.show', $assignment) }}" class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <input type="hidden" name="keep" value="1">
-                <div class="col-span-2 lg:col-span-1">
-                    <label class="sr-only" for="q">Suche</label>
-                    <div class="relative">
-                        <input id="q" name="q" value="{{ request('q') }}" placeholder="Nach Name, Datei…"
-                               class="w-full rounded-xl border-slate-200 focus:border-blue-400 focus:ring-blue-400 pl-10" />
-                        <svg class="pointer-events-none absolute right-2 top-2.5 -translate-y-1/2 h-5 w-5 text-slate-400"
-                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
-                        </svg>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="sr-only" for="sort">Sortierung</label>
-                    <select id="sort" name="sort" onchange="this.form.requestSubmit()"
-                            class="w-full rounded-xl border-slate-200 focus:border-blue-400 focus:ring-blue-400">
-                        <option value="latest" @selected(request('sort','latest')==='latest')>Neueste zuerst</option>
-                        <option value="oldest" @selected(request('sort')==='oldest')>Älteste zuerst</option>
-                        <option value="name" @selected(request('sort')==='name')>Name A–Z</option>
-                    </select>
-                </div>
-
-                <div class="flex gap-3 place-self-end lg:col-span-2">
-                    <button class="rounded-xl bg-blue-600 px-4 py-2.5 text-white hover:bg-blue-700">Filtern</button>
-                    <a href="{{ route('assignments.show', $assignment) }}" class="rounded-xl border border-slate-200 px-4 py-2.5 hover:bg-slate-50">Zurücksetzen</a>
-                </div>
-            </form>
 
             {{-- Submissions Table --}}
             <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white">
@@ -150,7 +120,6 @@
                             <th class="px-4 py-3 sm:px-6">Name</th>
                             <th class="px-4 py-3 sm:px-6">Datei</th>
                             <th class="px-4 py-3 sm:px-6">Größe</th>
-                            <th class="px-4 py-3 sm:px-6">Status</th>
                             <th class="px-4 py-3 sm:px-6">Eingereicht am</th>
                             <th class="px-4 py-3 sm:px-6 text-right">Aktionen</th>
                         </tr>
@@ -160,37 +129,26 @@
                             <tr class="hover:bg-slate-50/60">
                                 <td class="px-4 py-3 sm:px-6">
                                     <div class="font-medium text-slate-900">{{ $s->name }}</div>
-                                    @if($s->student_identifier)
-                                        <div class="text-xs text-slate-500">{{ $s->student_identifier }}</div>
+                                    @if($s->student_name)
+                                        <div class="text-xs text-slate-500">{{ $s->student_name }}</div>
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 sm:px-6">
                                     <div class="flex items-center gap-2">
-                                        <svg class="h-4 w-4 text-rose-600" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h7l5 5v15H6z"/><path d="M13 2v6h6"/></svg>
-                                        <span class="font-mono truncate max-w-[18ch]" title="{{ $s->filename }}">
-                                        {{ \Illuminate\Support\Str::limit($s->filename, 24) }}
+                                        <svg class="h-4 w-4 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M21 8V20.9932C21 21.5501 20.5552 22 20.0066 22H3.9934C3.44495 22 3 21.556 3 21.0082V2.9918C3 2.45531 3.4487 2 4.00221 2H14.9968L21 8ZM19 9H14V4H5V20H19V9ZM8 7H11V9H8V7ZM8 11H16V13H8V11ZM8 15H16V17H8V15Z"></path>
+                                        </svg>
+                                        <span class="font-mono truncate max-w-[18ch]" title="{{ $s->original_filename }}">
+                                        {{ \Illuminate\Support\Str::limit($s->original_filename, 24) }}
                                     </span>
                                     </div>
                                 </td>
                                 <td class="px-4 py-3 sm:px-6">
-                                    @if(isset($s->size_bytes))
-                                        {{ number_format($s->size_bytes / 1024, 1, ',', '.') }} KB
+                                    @if(isset($s->file_size))
+                                        {{ number_format($s->file_size / 1024, 1, ',', '.') }} KB
                                     @else
                                         —
                                     @endif
-                                </td>
-                                <td class="px-4 py-3 sm:px-6">
-                                    @php
-                                        $status = $s->status ?? 'new';
-                                        $badge = [
-                                            'new' => ['bg' => 'bg-blue-50', 'text' => 'text-blue-700', 'label' => 'Neu'],
-                                            'reviewed' => ['bg' => 'bg-amber-50', 'text' => 'text-amber-700', 'label' => 'Gesehen'],
-                                            'graded' => ['bg' => 'bg-emerald-50', 'text' => 'text-emerald-700', 'label' => 'Bewertet'],
-                                        ][$status] ?? ['bg'=>'bg-slate-100','text'=>'text-slate-700','label'=>ucfirst($status)];
-                                    @endphp
-                                    <span class="inline-flex rounded-full px-2 py-0.5 text-xs {{ $badge['bg'] }} {{ $badge['text'] }}">
-                                    {{ $badge['label'] }}
-                                </span>
                                 </td>
                                 <td class="px-4 py-3 sm:px-6">
                                     {{ optional($s->created_at)->timezone(config('app.timezone'))->format('d.m.Y H:i') }}
@@ -218,7 +176,7 @@
                                         </a>
 
                                         {{-- Edit meta (e.g., status, name) --}}
-                                        <a href="{{ route('submissions.edit', $s) }}"
+                                        <a href="{{ route('submissions.edit', [$assignment, $s]) }}"
                                            class="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1.5 text-white hover:bg-blue-700"
                                            title="Bearbeiten">
                                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -228,19 +186,19 @@
                                         </a>
 
                                         {{-- Delete --}}
-                                        <form method="POST" action="{{ route('submissions.destroy', $s) }}"
-                                              onsubmit="return confirm('Diese Einreichung wirklich löschen?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="inline-flex items-center gap-1 rounded-lg bg-red-600 px-3 py-1.5 text-white hover:bg-red-700"
-                                                    title="Löschen">
-                                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                                                    <path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
-                                                </svg>
-                                                <span class="sr-only sm:not-sr-only">Löschen</span>
-                                            </button>
-                                        </form>
+                                        @can('delete', $s)
+                                            <form method="POST" class="inline-flex rounded-lg bg-red-600 text-white hover:bg-red-700" action="{{ route('submissions.destroy',  $s) }}" onsubmit="return confirm('Diese Einreichung wirklich löschen?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="inline-flex items-center gap-1 rounded-lg bg-red-600 px-3 py-1.5 text-white" title="Löschen">
+                                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                        <path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                                        <path d="M10 11v6M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
+                                                    </svg>
+                                                    <span class="sr-only sm:not-sr-only">Löschen</span>
+                                                </button>
+                                            </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

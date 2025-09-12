@@ -37,8 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/assignments/{assignment}/close', [AssignmentController::class, 'close'])->name('assignments.close');
     Route::post('/assignments/{assignment}/open',  [AssignmentController::class, 'open'])->name('assignments.open');
     Route::delete('/assignments/{assignment}', [AssignmentController::class, 'destroy'])->name('assignments.destroy');
-    Route::get('assignments/{assignment}/export/zip',  [AssignmentController::class, 'exportZip'])->name('assignments.export.zip');
-    Route::get('assignments/{assignment}/export/pdf',  [AssignmentController::class, 'exportPdf'])->name('assignments.export.pdf');
+    Route::get('assignments/{assignment}/export/zip',  [AssignmentController::class, 'zip'])->name('assignments.export.zip');
+    Route::get('assignments/{assignment}/export/pdf',  [AssignmentController::class, 'merge'])->name('assignments.export.pdf');
 
     // Submissions
     Route::get('/assignments/{assignment}/submissions', [SubmissionController::class, 'index'])->name('submissions.index');
@@ -52,5 +52,6 @@ Route::middleware('auth')->group(function () {
 
 
 //  public intake page by assignment code:
-Route::get('/submit/{assignment:code}', [SubmissionController::class, 'createPublic'])->name('assignments.intake');
-Route::post('/submit/{assignment:code}', [SubmissionController::class, 'store'])->name('assignments.submit');
+Route::get('/submit/{code?}', [SubmissionController::class, 'create'])->name('assignments.intake');
+Route::post('/submit', [SubmissionController::class, 'store'])->name('assignments.submit');
+Route::get('/submitted', [SubmissionController::class, 'submitted'])->name('assignments.submitted');
