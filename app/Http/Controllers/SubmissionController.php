@@ -103,6 +103,7 @@ class SubmissionController extends Controller
     /** Show one submission (details) */
     public function show(Submission $submission)
     {
+        // GET assignment
         $this->authorize('view', $submission);
         return view('submissions.show', compact('submission'));
     }
@@ -124,7 +125,7 @@ class SubmissionController extends Controller
         ]);
     }
 
-    public function mergedPdf(\App\Models\Assignment $assignment)
+    public function merge(\App\Models\Assignment $assignment)
     {
         $this->authorize('view', $assignment);
 
@@ -179,5 +180,66 @@ class SubmissionController extends Controller
         $submission->delete();
 
         return back()->with('success', 'Abgabe gelöscht.');
+    }
+
+    public function edit(Assignment $assignment, Submission $submission)
+    {
+        // Ensure this submission belongs to the assignment (string FK by code)
+        abort_unless($submission->code === $assignment->code, 404);
+
+        // Eager-load the relation used in policies/views
+        $submission->loadMissing('assignment');
+
+        $this->authorize('update', $submission);
+
+        return view('submissions.edit', compact('assignment', 'submission'));
+    }
+
+    public function update(Request $request, Assignment $assignment, Submission $submission)
+    {
+        abort_unless($submission->code === $assignment->code, 404);
+
+        $this->authorize('update', $submission);
+
+        $data = $request->validate([
+            'student_name' => ['required','string','max:255'],
+            // File is optional during edit; if present it must be a PDF up to 20 MB
+            'file'         => ['nullable','file','mimes:pdf','mimetypes:application/pdf','max:20480'],
+        ]);
+
+        // If a new file is provided, replace the old one
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+
+            // Optional: keep your extra magic-bytes check
+            if (! $this->looksLikePdf($file->getRealPath())) {
+                return back()->withErrors(['file' => 'Die Datei ist kein gültiges PDF.'])->withInput();
+            }
+
+            // delete old if exists
+            $disk = Storage::disk('private');
+            if ($submission->storage_path && $disk->exists($submission->storage_path)) {
+                $disk->delete($submission->storage_path);
+            }
+
+            $newPath = $file->store("submissions/{$assignment->code}", 'private');
+
+            // Update file-related columns
+            $submission->original_filename = $file->getClientOriginalName();
+            $submission->storage_path      = $newPath;
+            $submission->file_size         = $file->getSize();
+            $submission->mime_type         = $file->getMimeType();
+            $submission->checksum          = hash_file('sha256', $file->getRealPath());
+            // keep submitted_at as-is (it’s the original submission moment)
+        }
+
+        // Update meta fields
+        $submission->student_name = $data['student_name'];
+
+        $submission->save();
+
+        return redirect()
+            ->route('assignments.show', $assignment)
+            ->with('success', 'Abgabe aktualisiert.');
     }
 }
