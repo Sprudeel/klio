@@ -108,7 +108,7 @@ class SubmissionController extends Controller
         return view('submissions.show', compact('submission'));
     }
 
-    /** Download (auth gated, private disk) */
+    /** Download (user gated, private disk) */
     public function download(Submission $submission)
     {
         $this->authorize('view', $submission);
