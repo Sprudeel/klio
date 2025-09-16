@@ -1,0 +1,76 @@
+name: CD
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Checkout
+        uses: actions/checkout@v4
+
+      - name: Derive version + short sha
+        id: meta
+        shell: bash
+        run: |
+          echo "GIT_SHA_SHORT=${GITHUB_SHA::8}" >> "$GITHUB_ENV"
+          APP_VERSION=$(grep -E '^APP_VERSION=' .env.example | cut -d= -f2- | tr -d '"' || true)
+          echo "APP_VERSION=${APP_VERSION:-0.0.0}" >> "$GITHUB_ENV"
+          APP_ENV_FILE=$(grep -E '^APP_ENV=' .env.example | cut -d= -f2- | tr -d '"' || true)
+          echo "APP_ENV=${APP_ENV}" >> "$GITHUB_ENV"
+
+
+      - name: Write version.json
+        shell: bash
+        run: |
+          mkdir -p public/build
+          cat > public/build/version.json <<JSON
+          {
+            "version": "${APP_VERSION}",
+            "sha": "${GIT_SHA_SHORT}",
+            "env": "$APP_ENV"
+            "built_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          JSON
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install & build assets
+        working-directory: ./
+        run: |
+          npm ci
+          npm run build
+
+      - name: Upload to Static Hosting via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.PROD_FTP_SERVER }}
+          username: ${{ secrets.PROD_FTP_USERNAME }}
+          password: ${{ secrets.PROD_FTP_PASSWORD }}
+
+      - name: 🔑 SSH and run commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEV_SSH_HOST }}
+          username: ${{ secrets.DEV_SSH_USER }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          port: 22
+          script: |
+            cd www/klio.lchsd.ch
+            /usr/local/php84/bin/composer install
+            /usr/local/php84/bin/php artisan migrate:fresh
+            /usr/local/php84/bin/php artisan config:clear
+            /usr/local/php84/bin/php artisan route:clear
+            /usr/local/php84/bin/php artisan cache:clear
+            /usr/local/php84/bin/php artisan db:seed --class=AdminUserSeeder
+            mkdir -p public/vendor/bladewind/js public/vendor/bladewind/css
+            cp -f vendor/mkocansey/bladewind/public/js/helpers.js public/vendor/bladewind/js/
+            cp -f vendor/mkocansey/bladewind/public/css/bladewind-ui.min.css public/vendor/bladewind/css/
+            cp -f vendor/mkocansey/bladewind/public/css/animate.min.css public/vendor/bladewind/css/
+            find public/vendor/bladewind -type d -exec chmod 755 {} \;
+            find public/vendor/bladewind -type f -exec chmod 644 {} \;

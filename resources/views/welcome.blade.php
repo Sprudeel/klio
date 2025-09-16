@@ -25,7 +25,7 @@
             </div>
 
             {{-- Right: Animated Logo --}}
-            <div class="flex justify-center lg:justify-end">
+            <div class="flex justify-center lg:justify-end p-16">
                 <x-svg_animation class="w-40 h-auto"/>
             </div>
         </div>
