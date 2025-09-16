@@ -1,6 +1,6 @@
 <x-layout>
-    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-        <div class="flex gap-6 lg:flex-row lg:items-end lg:justify-between">
+    <section class="relative mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="relative items-center flex lg:flex-row sm:flex-col gap-6 lg:items-end lg:justify-between">
             <div>
                 <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">
                     Hallo, {{ auth()->user()->name }} 👋
