@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserAdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
@@ -25,6 +26,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile',   [UserController::class, 'profile'])->name('profile');
     Route::post('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::post('/password', [UserController::class, 'changePassword'])->name('password.change');
+    Route::get('/users', [UserAdminController::class, 'index'])->name('admin.users.index');
+    Route::get('/users/create', [UserAdminController::class, 'create'])->name('admin.users.create');
+    Route::post('/users', [UserAdminController::class, 'store'])->name('admin.users.store');
+
+    Route::get('/users/{user}/password',  [UserAdminController::class, 'editPassword'])->name('admin.users.password.edit');
+    Route::put('/users/{user}/password',  [UserAdminController::class, 'updatePassword'])->name('admin.users.password.update');
 
     // Assignments
     Route::get('/assignments', [AssignmentController::class, 'index'])->name('assignments.index');
