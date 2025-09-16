@@ -1,4 +1,3 @@
-{{-- resources/views/assignments/create.blade.php --}}
 <x-layout>
     <section class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10">
         <div class="mb-8">
@@ -18,7 +17,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('assignments.store') }}" class="space-y-6">
+        <form method="POST" action="{{ route('assignments.update', $assignment) }}" class="space-y-6">
             @csrf
 
             <x-bladewind::card class="p-6">
@@ -31,7 +30,7 @@
                             placeholder="z. B. Aufsatz: Erörterung"
                             required="true"
                             show_inline_error="true"
-                            value="{{ old('name') }}"
+                            value="{{ $assignment->name }}"
                             error_message="@error('name'){{ $errors->first('name') }}@enderror"
                         />
                     </div>
@@ -45,7 +44,7 @@
                             maxlength="8"
                             required="true"
                             show_inline_error="true"
-                            value="{{ old('code') }}"
+                            value="{{ $assignment->code }}"
                             error_message="@error('code'){{$errors->first('code') }}@enderror"
                         />
                         <p class="mt-1 text-xs text-slate-500">Teile diesen Code mit deinen Schüler:innen. Wenn du dieses Feld leer lässt wird automatisch ein Code erstellt.</p>
@@ -59,17 +58,17 @@
                             label="Deadline"
                             required="true"
                             show_inline_error="true"
-                            value="{{ old('deadline') }}"
+                            value="{{ ($assignment->deadline)->format('Y-m-d') }}"
                             error_message="@error('deadline'){{$errors->first('deadline') }}@enderror"
                         />
                     </div>
 
-                    {{-- Farbe --}}
+                    {{-- Color --}}
                     <div>
                         <div class="flex gap-8">
                             <label class="bw-label ">Farbe</label>
                             <input type="color" name="color"
-                                   value="{{ old('color', '#3C82F6') }}"
+                                   value="{{ $assignment->color }}"
                                    class="bw-input h-10 w-16 p-1"
                             /></div>
                         @error('color')
@@ -83,9 +82,9 @@
                         <x-bladewind::input
                             name="icon"
                             label="Icon"
-                            placeholder="z. B. ✍️  oder heroicon:academic-cap"
+                            placeholder="z. B. ✍️ "
                             show_inline_error="true"
-                            value="{{ old('icon') }}"
+                            value="{{ $assignment->icon }}"
                             error_message="@error('icon'){{ $errors->first('icon') }}@enderror"
                         />
                         <p class="mt-1 text-xs text-slate-500">Du kannst ein Emoji oder einen Icon-Key verwenden.</p>
@@ -97,28 +96,16 @@
                             name="description"
                             label="Beschreibung (optional)"
                             placeholder="Kurze Hinweise für die Abgabe …"
-                        >{{ old('description') }}</x-bladewind::textarea>
+                        >{{ $assignment->description }}</x-bladewind::textarea>
                         @error('description')
                         <p class="mt-1 text-sm text-red-600">{{ $errors->first('description') }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Status geschlossen --}}
-                    <div class="sm:col-span-2">
-                        <x-bladewind::checkbox
-                            name="is_closed"
-                            label="Abgabe ist geschlossen"
-                            checked="{{ old('is_closed') ? 'true' : 'false' }}"
-                        />
-                        @error('is_closed')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
             </x-bladewind::card>
 
-            <div class="flex items-center justify-end gap-3">
-                <a href="{{ route('assignments.index') }}"
+            <div class="flex items-center justify-end gap-8">
+                <a href="{{ url()->previous() }}"
                    class="text-slate-600 hover:text-slate-900 underline underline-offset-4">
                     Abbrechen
                 </a>
@@ -127,7 +114,7 @@
                     type="primary"
                     has_spinner="true"
                     can_submit="true">
-                    Anlegen
+                    Bearbeiten
                 </x-bladewind::button>
             </div>
         </form>

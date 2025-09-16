@@ -34,7 +34,7 @@ class Submission extends Model
      ==========================*/
     public function assignment()
     {
-        return $this->belongsTo(Assignment::class);
+        return $this->belongsTo(Assignment::class, 'code', 'code');
     }
 
     /* =========================

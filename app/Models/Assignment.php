@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Assignment extends Model
 {
@@ -10,23 +11,23 @@ class Assignment extends Model
         'name',
         'code',
         'deadline',
-        'author',
+        'author_id',
         'is_closed',
         'closed_at',
         'color',
         'icon',
         'description',
+        'closed_at',
+        'isClosed',
     ];
 
     protected $casts = [
         'deadline'   => 'datetime',
-        'closed_at'  => 'datetime',
-        'is_closed'  => 'boolean',
     ];
 
-    public function author()
+    public function author(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'author');
+        return $this->belongsTo(User::class, 'author_id', 'id');
     }
 
     public function submissions()

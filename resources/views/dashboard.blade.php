@@ -1,6 +1,6 @@
-<x-auth-layout>
-    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-        <div class="flex gap-6 lg:flex-row lg:items-end lg:justify-between">
+<x-layout>
+    <section class="relative mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="relative items-center flex lg:flex-row sm:flex-col gap-6 lg:items-end lg:justify-between">
             <div>
                 <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">
                     Hallo, {{ auth()->user()->name }} 👋
@@ -11,7 +11,7 @@
             </div>
             <div class="flex flex-wrap gap-3">
                 <a href="{{ route('assignments.create') }}"
-                   class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                   class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
@@ -22,7 +22,7 @@
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 7h16M4 12h10M4 17h16"/>
                     </svg>
-                    Meine Abgaben
+                    Meine Aufgaben
                 </a>
             </div>
         </div>
@@ -31,8 +31,8 @@
         <div class="relative mt-16 flex">
             <div class="mx-auto min-w-2/3">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-semibold">Deine neuesten Abgaben</h2>
-                    <a href="{{ route('assignments.index') }}" class="text-sm text-indigo-600 hover:underline">Alle ansehen</a>
+                    <h2 class="text-xl font-semibold">Deine neuesten Aufgaben</h2>
+                    <a href="{{ route('assignments.index') }}" class="text-sm text-blue-600 hover:underline">Alle ansehen</a>
                 </div>
 
                 @php
@@ -41,7 +41,7 @@
 
                 @if($latest->isEmpty())
                     <div class="mt-4 rounded-2xl border border-dashed border-slate-300 p-8 text-center">
-                        <p class="text-slate-600">Noch keine Abgaben erstellt.</p>
+                        <p class="text-slate-600">Noch keine Aufgaben erstellt.</p>
                         <a href="{{ route('assignments.create') }}"
                            class="mt-3 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-slate-800">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -57,17 +57,18 @@
                                class="group block rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                                 <div class="flex items-start justify-between">
                                     <div>
-                                        <div class="text-sm uppercase tracking-wide text-slate-500">Code</div>
-                                        <div class="mt-0.5 font-mono text-slate-900">{{ $a->code }}</div>
+                                        <h2 class="text-2xl font-semibold text-slate-900 group-hover:text-slate-900/90">
+                                            {{ $a->name }}
+                                        </h2>
                                     </div>
                                     @if($a->color)
                                         <span class="inline-flex h-6 min-w-6 items-center justify-center rounded-full px-2 text-xs"
                                               style="background-color: {{ $a->color }}20; color: {{ $a->color }}">●</span>
                                     @endif
                                 </div>
-                                <h3 class="mt-3 text-lg font-semibold text-slate-900 group-hover:text-slate-900/90">
-                                    {{ $a->name }}
-                                </h3>
+
+                                <div class="text-sm tracking-wide text-slate-500">Code: <span class="font-mono text-slate-900">{{ $a->code }}</span></div>
+
                                 <div class="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-600">
                                     @if($a->deadline)
                                         <span class="inline-flex items-center gap-1">
@@ -92,4 +93,4 @@
         @include('partials.updates')
 
     </section>
-</x-auth-layout>
+</x-layout>
