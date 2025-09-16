@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -79,7 +80,7 @@ class UserController extends Controller
 
         $data = $request->validate([
             'name'  => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user)],
         ]);
 
         $user->update($data);
@@ -107,4 +108,6 @@ class UserController extends Controller
 
         return back()->with('success', 'Passwort geändert.');
     }
+
+
 }
