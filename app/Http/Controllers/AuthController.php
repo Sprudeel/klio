@@ -61,7 +61,7 @@ class AuthController extends Controller
     {
         if (Auth::id() != $user) abort(403, 'unauthorized');
         $user = User::find(Auth::id());
-        return view('auth.profile', compact('user'));
+        return view('user.profile', compact('user'));
     }
     public function change_password(Request $request): \Illuminate\Http\RedirectResponse
     {
