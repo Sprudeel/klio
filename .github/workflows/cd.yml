@@ -1,28 +1,39 @@
 name: CD
+
 on:
   workflow_dispatch:
   push:
     branches:
       - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: 🚚 Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Derive version + short sha
+      # ---- Meta (version/env/sha) ----
+      - name: 🔎 Derive version + env + short sha
         id: meta
         shell: bash
         run: |
           echo "GIT_SHA_SHORT=${GITHUB_SHA::8}" >> "$GITHUB_ENV"
+
           APP_VERSION=$(grep -E '^APP_VERSION=' .env.example | cut -d= -f2- | tr -d '"' || true)
-          echo "APP_VERSION=${APP_VERSION:-0.0.0}" >> "$GITHUB_ENV"
-          APP_ENV_FILE=$(grep -E '^APP_ENV=' .env.example | cut -d= -f2- | tr -d '"' || true)
+          APP_ENV=$(grep -E '^APP_ENV=' .env.example | cut -d= -f2- | tr -d '"' || true)
+
+          : "${APP_VERSION:=0.0.0}"
+          : "${APP_ENV:=production}"
+
+          echo "APP_VERSION=${APP_VERSION}" >> "$GITHUB_ENV"
           echo "APP_ENV=${APP_ENV}" >> "$GITHUB_ENV"
 
-
-      - name: Write version.json
+      # ---- Create version.json (valid JSON!) ----
+      - name: 🧾 Write version.json
         shell: bash
         run: |
           mkdir -p public/build
@@ -30,29 +41,34 @@ jobs:
           {
             "version": "${APP_VERSION}",
             "sha": "${GIT_SHA_SHORT}",
-            "env": "$APP_ENV"
+            "env": "${APP_ENV}",
             "built_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           }
           JSON
+          echo "Wrote public/build/version.json:"
+          cat public/build/version.json
 
-      - name: Use Node
+      # ---- Frontend build ----
+      - name: 🟢 Use Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
-      - name: Install & build assets
-        working-directory: ./
+      - name: 📦 Install & build assets
         run: |
           npm ci
           npm run build
 
-      - name: Upload to Static Hosting via FTP
+      # ---- FTP Deploy ----
+      - name: 🚀 FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          server: ${{ secrets.PROD_FTP_SERVER }}
+          server:   ${{ secrets.PROD_FTP_SERVER }}
           username: ${{ secrets.PROD_FTP_USERNAME }}
           password: ${{ secrets.PROD_FTP_PASSWORD }}
 
+      # ---- SSH post-deploy steps on server ----
       - name: 🔑 SSH and run commands
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -61,16 +77,24 @@ jobs:
           key: ${{ secrets.DEV_SSH_KEY }}
           port: 22
           script: |
+            set -e
             cd www/klio.lchsd.ch
-            /usr/local/php84/bin/composer install
-            /usr/local/php84/bin/php artisan migrate:fresh
+
+            /usr/local/php84/bin/composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+
+            /usr/local/php84/bin/php artisan migrate --force
+
+            # clear + warm caches safely after migrations
             /usr/local/php84/bin/php artisan config:clear
             /usr/local/php84/bin/php artisan route:clear
+            /usr/local/php84/bin/php artisan view:clear
             /usr/local/php84/bin/php artisan cache:clear
-            /usr/local/php84/bin/php artisan db:seed --class=AdminUserSeeder
-            mkdir -p public/vendor/bladewind/js public/vendor/bladewind/css
-            cp -f vendor/mkocansey/bladewind/public/js/helpers.js public/vendor/bladewind/js/
-            cp -f vendor/mkocansey/bladewind/public/css/bladewind-ui.min.css public/vendor/bladewind/css/
-            cp -f vendor/mkocansey/bladewind/public/css/animate.min.css public/vendor/bladewind/css/
-            find public/vendor/bladewind -type d -exec chmod 755 {} \;
-            find public/vendor/bladewind -type f -exec chmod 644 {} \;
+
+            # If you depend on Bladewind public files, ensure they exist
+            mkdir -p public/vendor/bladewind/js public/vendor/bladewind/css || true
+            [ -f vendor/mkocansey/bladewind/public/js/helpers.js ] && cp -f vendor/mkocansey/bladewind/public/js/helpers.js public/vendor/bladewind/js/ || true
+            [ -f vendor/mkocansey/bladewind/public/css/bladewind-ui.min.css ] && cp -f vendor/mkocansey/bladewind/public/css/bladewind-ui.min.css public/vendor/bladewind/css/ || true
+            [ -f vendor/mkocansey/bladewind/public/css/animate.min.css ] && cp -f vendor/mkocansey/bladewind/public/css/animate.min.css public/vendor/bladewind/css/ || true
+
+            find public/vendor/bladewind -type d -exec chmod 755 {} \; || true
+            find public/vendor/bladewind -type f -exec chmod 644 {} \; || true
