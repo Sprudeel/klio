@@ -10,7 +10,7 @@
         "@tailwindcss/vite": "^4.0.0",
         "axios": "^1.11.0",
         "concurrently": "^9.0.1",
-        "cropperjs": "^2.0.1",
+        "cropperjs": "1.6.2",
         "filepond": "^4.32.9",
         "filepond-plugin-file-encode": "^2.1.14",
         "filepond-plugin-file-validate-size": "^2.2.8",
