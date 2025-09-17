@@ -60,10 +60,22 @@ jobs:
 
           mkdir -p public/vendor/bladewind/js public/vendor/bladewind/css
 
-          # Cropper CSS
-          cp_first public/vendor/bladewind/css/cropper.min.css \
-            node_modules/cropperjs/dist/cropper.min.css \
-            node_modules/cropperjs/dist/cropper.css
+          # --- Cropper (robust: pick min or non-min) ---
+          CSS=$(ls node_modules/cropperjs/dist/cropper*.css 2>/dev/null | head -n1 || true)
+          JS=$(ls node_modules/cropperjs/dist/cropper*.min.js 2>/dev/null | head -n1 || true)
+          [ -z "$JS" ] && JS=$(ls node_modules/cropperjs/dist/cropper.js 2>/dev/null | head -n1 || true)
+
+          if [ -n "$CSS" ]; then
+          cp "$CSS" public/vendor/bladewind/css/cropper.min.css
+          else
+          echo "⚠ cropper css not found in node_modules/cropperjs/dist"
+          fi
+
+          if [ -n "$JS" ]; then
+          cp "$JS" public/vendor/bladewind/js/cropper.min.js
+          else
+          echo "⚠ cropper js not found in node_modules/cropperjs/dist"
+          fi
 
           # FilePond core
           cp_first public/vendor/bladewind/js/filepond.min.js \
@@ -109,6 +121,12 @@ jobs:
 
           echo "---- Listing deployed vendor/bladewind ----"
           find public/vendor/bladewind -maxdepth 2 -type f -print
+
+      - name: Assert cropper assets exist locally
+        run: |
+          test -f public/vendor/bladewind/css/cropper.min.css
+          test -f public/vendor/bladewind/js/cropper.min.js
+          echo "OK: cropper assets ready"
 
       # ---- Meta (version/env/sha) ----
       - name: 🔎 Derive version + env + short sha
