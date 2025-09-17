@@ -48,6 +48,31 @@ jobs:
           npm ci
           npm run build
 
+      # (Optional) If you reference libs directly from /public/vendor, expose them:
+      - name: 📁 Expose 3rd-party browser files to /public/vendor (optional)
+        shell: bash
+        run: |
+          set -e
+          mkdir -p public/vendor/filepond/plugins public/vendor/filepond/styles public/vendor/cropper
+          if [ -d node_modules/filepond ]; then
+            cp node_modules/filepond/dist/filepond.min.js  public/vendor/filepond/filepond.min.js
+            cp node_modules/filepond/dist/filepond.min.css public/vendor/filepond/styles/filepond.css
+          fi
+          if [ -d node_modules/filepond-plugin-image-preview ]; then
+            cp node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js  public/vendor/filepond/plugins/filepond-plugin-image-preview.js
+            cp node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css public/vendor/filepond/styles/filepond-plugin-image-preview.css
+          fi
+          for P in filepond-plugin-file-encode filepond-plugin-file-validate-type filepond-plugin-file-validate-size filepond-plugin-image-exif-orientation filepond-plugin-image-crop filepond-plugin-image-resize filepond-plugin-image-transform; do
+            if [ -d "node_modules/$P" ]; then
+              JS=$(ls node_modules/$P/dist/*.js 2>/dev/null | head -n1 || true)
+              [ -n "$JS" ] && cp "$JS" "public/vendor/filepond/plugins/$(basename "$JS")"
+            fi
+          done
+          if [ -d node_modules/cropperjs ]; then
+            cp node_modules/cropperjs/dist/cropper.min.js  public/vendor/cropper/cropper.min.js
+            cp node_modules/cropperjs/dist/cropper.min.css public/vendor/cropper/cropper.min.css
+          fi
+
       - name: Upload to Static Hosting via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
