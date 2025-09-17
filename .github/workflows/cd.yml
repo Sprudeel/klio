@@ -53,8 +53,6 @@ jobs:
           cp_first public/vendor/bladewind/css/cropper.min.css \
             node_modules/cropperjs/dist/cropper.min.css \
             node_modules/cropperjs/dist/cropper.css
-          cp node_modules/cropperjs/dist/cropper.min.css public/vendor/bladewind/css/
-          cp node_modules/cropperjs/dist/cropper.min.js public/vendor/bladewind/js/
 
           # FilePond core
           cp_first public/vendor/bladewind/js/filepond.min.js \
