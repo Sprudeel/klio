@@ -65,11 +65,11 @@ jobs:
         run: |
           set -e
 
-          # helper: copy first existing file from args to dest
           cp_first () {
             dest="$1"; shift
             for src in "$@"; do
               if [ -f "$src" ]; then
+                mkdir -p "$(dirname "$dest")"
                 cp "$src" "$dest"
                 echo "✔ copied $(basename "$src") -> $dest"
                 return 0
@@ -81,61 +81,55 @@ jobs:
 
           mkdir -p public/vendor/bladewind/js public/vendor/bladewind/css
 
-          # Core
+          # Cropper CSS
+          cp_first public/vendor/bladewind/css/cropper.min.css \
+            node_modules/cropperjs/dist/cropper.min.css \
+            node_modules/cropperjs/dist/cropper.css
+
+          # FilePond core
           cp_first public/vendor/bladewind/js/filepond.min.js \
             node_modules/filepond/dist/filepond.min.js \
             node_modules/filepond/dist/filepond.js
-
           cp_first public/vendor/bladewind/css/filepond.css \
             node_modules/filepond/dist/filepond.min.css \
             node_modules/filepond/dist/filepond.css
 
-          # Plugins (JS)
+          # FilePond plugins you use (include validate-size explicitly – your 404)
           cp_first public/vendor/bladewind/js/filepond-plugin-image-preview.js \
             node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js \
             node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js
-
-          cp_first public/vendor/bladewind/js/filepond-plugin-file-encode.js \
-            node_modules/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js \
-            node_modules/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.js
-
-          cp_first public/vendor/bladewind/js/filepond-plugin-file-validate-type.js \
-            node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.min.js \
-            node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js
-
-          cp_first public/vendor/bladewind/js/filepond-plugin-file-validate-size.js \
-            node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js \
-            node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js
-
-          cp_first public/vendor/bladewind/js/filepond-plugin-image-exif-orientation.js \
-            node_modules/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js \
-            node_modules/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js
-
-          cp_first public/vendor/bladewind/js/filepond-plugin-image-crop.js \
-            node_modules/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.min.js \
-            node_modules/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js
-
-          cp_first public/vendor/bladewind/js/filepond-plugin-image-resize.js \
-            node_modules/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.min.js \
-            node_modules/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js
-
-          cp_first public/vendor/bladewind/js/filepond-plugin-image-transform.js \
-            node_modules/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.min.js \
-            node_modules/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js
-
-          # Plugin CSS
           cp_first public/vendor/bladewind/css/filepond-plugin-image-preview.css \
             node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css \
             node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css
 
-          # Cropper
-          cp_first public/vendor/bladewind/js/cropper.min.js \
-            node_modules/cropperjs/dist/cropper.min.js \
-            node_modules/cropperjs/dist/cropper.js
+          cp_first public/vendor/bladewind/js/filepond-plugin-image-validate-size.js \
+            node_modules/filepond-plugin-image-validate-size/dist/filepond-plugin-image-validate-size.min.js \
+            node_modules/filepond-plugin-image-validate-size/dist/filepond-plugin-image-validate-size.js
 
-          cp_first public/vendor/bladewind/css/cropper.min.css \
-            node_modules/cropperjs/dist/cropper.min.css \
-            node_modules/cropperjs/dist/cropper.css
+          cp_first public/vendor/bladewind/js/filepond-plugin-file-encode.js \
+            node_modules/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js \
+            node_modules/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.js
+          cp_first public/vendor/bladewind/js/filepond-plugin-file-validate-type.js \
+            node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.min.js \
+            node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js
+          cp_first public/vendor/bladewind/js/filepond-plugin-file-validate-size.js \
+            node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js \
+            node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js
+          cp_first public/vendor/bladewind/js/filepond-plugin-image-exif-orientation.js \
+            node_modules/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js \
+            node_modules/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js
+          cp_first public/vendor/bladewind/js/filepond-plugin-image-crop.js \
+            node_modules/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.min.js \
+            node_modules/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js
+          cp_first public/vendor/bladewind/js/filepond-plugin-image-resize.js \
+            node_modules/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.min.js \
+            node_modules/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js
+          cp_first public/vendor/bladewind/js/filepond-plugin-image-transform.js \
+            node_modules/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.min.js \
+            node_modules/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js
+
+          echo "---- Listing deployed vendor/bladewind ----"
+          find public/vendor/bladewind -maxdepth 2 -type f -print
 
 
       # ---- FTP Deploy ----
