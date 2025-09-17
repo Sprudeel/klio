@@ -9,7 +9,6 @@ import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orien
 import FilePondPluginImageCrop from 'filepond-plugin-image-crop';
 import FilePondPluginImageResize from 'filepond-plugin-image-resize';
 import FilePondPluginImageTransform from 'filepond-plugin-image-transform';
-import 'cropperjs/dist/cropper.min.css';
 
 FilePond.registerPlugin(
     FilePondPluginImagePreview,
