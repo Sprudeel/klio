@@ -3,12 +3,12 @@
         "type": "perf",
         "title": "Neues Design",
         "desc": "consa heisst nun klio und ist mit modernem Design und besserer Sicherheit bereit.",
-        "tag": "new"
+        "tag": "Modern"
     },
     {
         "type": "feature",
         "title": "Sammel-PDF für Abgaben",
-        "desc": "Alle PDFs einer Aufgabe zu einem Dokument zusammenführen – ideal fürs Korrigieren.",
+        "desc": "Alle PDFs einer Aufgabe zu einem Dokument zusammenführen – ideal fürs korrigieren.",
         "tag": "Neu"
     },
     {
