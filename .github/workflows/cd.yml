@@ -60,30 +60,32 @@ jobs:
           npm ci
           npm run build
 
-            # (Optional) If you reference libs directly from /public/vendor, expose them:
-      - name: 📁 Expose 3rd-party browser files to /public/vendor (optional)
+      - name: Copy FilePond & Cropper to /public/vendor/bladewind
         shell: bash
         run: |
           set -e
-          mkdir -p public/vendor/filepond/plugins public/vendor/filepond/styles public/vendor/cropper
-          if [ -d node_modules/filepond ]; then
-            cp node_modules/filepond/dist/filepond.min.js  public/vendor/filepond/filepond.min.js
-            cp node_modules/filepond/dist/filepond.min.css public/vendor/filepond/styles/filepond.css
-          fi
-          if [ -d node_modules/filepond-plugin-image-preview ]; then
-            cp node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js  public/vendor/filepond/plugins/filepond-plugin-image-preview.js
-            cp node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css public/vendor/filepond/styles/filepond-plugin-image-preview.css
-          fi
-          for P in filepond-plugin-file-encode filepond-plugin-file-validate-type filepond-plugin-file-validate-size filepond-plugin-image-exif-orientation filepond-plugin-image-crop filepond-plugin-image-resize filepond-plugin-image-transform; do
-            if [ -d "node_modules/$P" ]; then
-              JS=$(ls node_modules/$P/dist/*.js 2>/dev/null | head -n1 || true)
-              [ -n "$JS" ] && cp "$JS" "public/vendor/filepond/plugins/$(basename "$JS")"
-            fi
-          done
-          if [ -d node_modules/cropperjs ]; then
-            cp node_modules/cropperjs/dist/cropper.min.js  public/vendor/cropper/cropper.min.js
-            cp node_modules/cropperjs/dist/cropper.min.css public/vendor/cropper/cropper.min.css
-          fi
+          mkdir -p public/vendor/bladewind/js public/vendor/bladewind/css
+
+          # FilePond core
+          cp node_modules/filepond/dist/filepond.min.js  public/vendor/bladewind/js/filepond.min.js
+          cp node_modules/filepond/dist/filepond.min.css public/vendor/bladewind/css/filepond.css
+
+          # FilePond plugin CSS
+          cp node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css public/vendor/bladewind/css/filepond-plugin-image-preview.css
+
+          # FilePond plugins (JS)
+          cp node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js      public/vendor/bladewind/js/filepond-plugin-image-preview.js
+          cp node_modules/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.js          public/vendor/bladewind/js/filepond-plugin-file-encode.js
+          cp node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js public/vendor/bladewind/js/filepond-plugin-file-validate-type.js
+          cp node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js public/vendor/bladewind/js/filepond-plugin-file-validate-size.js
+          cp node_modules/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js public/vendor/bladewind/js/filepond-plugin-image-exif-orientation.js
+          cp node_modules/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js            public/vendor/bladewind/js/filepond-plugin-image-crop.js
+          cp node_modules/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js        public/vendor/bladewind/js/filepond-plugin-image-resize.js
+          cp node_modules/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js  public/vendor/bladewind/js/filepond-plugin-image-transform.js
+
+          # Cropper
+          cp node_modules/cropperjs/dist/cropper.min.js  public/vendor/bladewind/js/cropper.min.js
+          cp node_modules/cropperjs/dist/cropper.min.css public/vendor/bladewind/css/cropper.min.css
 
       # ---- FTP Deploy ----
       - name: 🚀 FTP Deploy
@@ -92,6 +94,14 @@ jobs:
           server:   ${{ secrets.PROD_FTP_SERVER }}
           username: ${{ secrets.PROD_FTP_USERNAME }}
           password: ${{ secrets.PROD_FTP_PASSWORD }}
+          exclude: |
+            **/.git*
+            node_modules/**
+            /vendor/**
+            storage/logs/**
+            storage/framework/cache/**
+            storage/framework/sessions/**
+            storage/framework/views/**
 
       # ---- SSH post-deploy steps on server ----
       - name: 🔑 SSH and run commands
@@ -107,7 +117,7 @@ jobs:
 
             /usr/local/php84/bin/composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 
-            /usr/local/php84/bin/php artisan migrate --force
+            /usr/local/php84/bin/php artisan migrate
 
             # clear + warm caches safely after migrations
             /usr/local/php84/bin/php artisan config:clear
