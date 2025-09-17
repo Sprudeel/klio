@@ -8,6 +8,16 @@
                 @csrf
                 @method('PUT')
 
+                <!-- Hidden (but accessible) username field for better autocomplete context -->
+                <input type="text"
+                       name="username"
+                       autocomplete="username"
+                       value="{{ $user->email }}"
+                       class="sr-only"
+                       tabindex="-1"
+                       aria-hidden="true"
+                       style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;" />
+
                 <div class="grid sm:grid-cols-2 gap-4">
                     <x-bladewind::input
                         type="password"
@@ -15,6 +25,7 @@
                         label="Neues Passwort"
                         required="true"
                         show_inline_error="true"
+                        autocomplete="new-password"
                     />
                     <x-bladewind::input
                         type="password"
@@ -22,6 +33,7 @@
                         label="(Wiederholung)"
                         required="true"
                         show_inline_error="true"
+                        autocomplete="new-password"
                     />
                 </div>
 

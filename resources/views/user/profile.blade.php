@@ -62,12 +62,23 @@
             <form class="mt-8 space-y-6" method="POST" action="{{ route('password.change') }}">
                 @csrf
 
+                <!-- Hidden (but accessible) username field for better autocomplete context -->
+                <input type="text"
+                       name="username"
+                       autocomplete="username"
+                       value="{{ $user->email }}"
+                       class="sr-only"
+                       tabindex="-1"
+                       aria-hidden="true"
+                       style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;" />
+
                 <x-bladewind::input
                     type="password"
                     name="current_password"
                     label="Aktuelles Passwort"
                     required="true"
                     show_inline_error="true"
+                    autocomplete="current-password"
                 />
 
                 <div class="grid sm:grid-cols-2 gap-6">
@@ -77,6 +88,7 @@
                         label="Neues Passwort"
                         required="true"
                         show_inline_error="true"
+                        autocomplete="new-password"
                     />
                     <x-bladewind::input
                         type="password"
@@ -84,6 +96,7 @@
                         label="Neues Passwort (Wiederholung)"
                         required="true"
                         show_inline_error="true"
+                        autocomplete="new-password"
                     />
                 </div>
 

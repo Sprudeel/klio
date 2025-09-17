@@ -23,31 +23,10 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-
-
       - name: 📦 Install & build assets
         run: |
           npm ci
           npm run build
-
-
-      - name: Resolve cropperjs paths (robust)
-        run: |
-          node -e "
-            const path = require('path');
-            try {
-              const pkg = require.resolve('cropperjs/package.json');
-              const root = path.dirname(pkg);
-              const dist = path.join(root, 'dist');
-              const jsMin = path.join(dist, 'cropper.min.js');
-              const js = path.join(dist, 'cropper.js');
-              const cssMin = path.join(dist, 'cropper.min.css');
-              const css = path.join(dist, 'cropper.css');
-              console.log('CROPPER_PKG=', pkg);
-              console.log('CROPPER_JS=', require('fs').existsSync(jsMin) ? jsMin : js);
-              console.log('CROPPER_CSS=', require('fs').existsSync(cssMin) ? cssMin : css);
-            } catch (e) { console.error('cropperjs not resolvable', e); process.exit(1); }
-          "
 
       - name: Copy FilePond & Cropper to /public/vendor/bladewind (resilient)
         shell: bash
@@ -129,15 +108,6 @@ jobs:
           echo "---- Listing deployed vendor/bladewind ----"
           find public/vendor/bladewind -maxdepth 2 -type f -print
 
-      - name: Assert cropper assets exist locally
-        run: |
-          set -e
-          test -f public/vendor/bladewind/css/cropper.min.css
-          test -f public/vendor/bladewind/js/cropper.min.js
-          echo "OK: cropper assets ready"
-          ls -l public/vendor/bladewind/css/ | sed -n '1,200p'
-          ls -l public/vendor/bladewind/js/  | sed -n '1,200p'
-
       # ---- Meta (version/env/sha) ----
       - name: 🔎 Derive version + env + short sha
         id: meta
@@ -199,6 +169,7 @@ jobs:
 
             /usr/local/php84/bin/composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 
+            /usr/local/php84/bin/php artisan vendor:publish --tag=bladewind-public --force
             /usr/local/php84/bin/php artisan migrate
 
             # clear + warm caches safely after migrations
