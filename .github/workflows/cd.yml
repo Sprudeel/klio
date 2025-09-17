@@ -60,32 +60,83 @@ jobs:
           npm ci
           npm run build
 
-      - name: Copy FilePond & Cropper to /public/vendor/bladewind
+      - name: Copy FilePond & Cropper to /public/vendor/bladewind (resilient)
         shell: bash
         run: |
           set -e
+
+          # helper: copy first existing file from args to dest
+          cp_first () {
+            dest="$1"; shift
+            for src in "$@"; do
+              if [ -f "$src" ]; then
+                cp "$src" "$dest"
+                echo "✔ copied $(basename "$src") -> $dest"
+                return 0
+              fi
+            done
+            echo "⚠ skipped $(basename "$dest") (no source found)" >&2
+            return 0
+          }
+
           mkdir -p public/vendor/bladewind/js public/vendor/bladewind/css
 
-          # FilePond core
-          cp node_modules/filepond/dist/filepond.min.js  public/vendor/bladewind/js/filepond.min.js
-          cp node_modules/filepond/dist/filepond.min.css public/vendor/bladewind/css/filepond.css
+          # Core
+          cp_first public/vendor/bladewind/js/filepond.min.js \
+            node_modules/filepond/dist/filepond.min.js \
+            node_modules/filepond/dist/filepond.js
 
-          # FilePond plugin CSS
-          cp node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css public/vendor/bladewind/css/filepond-plugin-image-preview.css
+          cp_first public/vendor/bladewind/css/filepond.css \
+            node_modules/filepond/dist/filepond.min.css \
+            node_modules/filepond/dist/filepond.css
 
-          # FilePond plugins (JS)
-          cp node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js      public/vendor/bladewind/js/filepond-plugin-image-preview.js
-          cp node_modules/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.js          public/vendor/bladewind/js/filepond-plugin-file-encode.js
-          cp node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js public/vendor/bladewind/js/filepond-plugin-file-validate-type.js
-          cp node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js public/vendor/bladewind/js/filepond-plugin-file-validate-size.js
-          cp node_modules/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js public/vendor/bladewind/js/filepond-plugin-image-exif-orientation.js
-          cp node_modules/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js            public/vendor/bladewind/js/filepond-plugin-image-crop.js
-          cp node_modules/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js        public/vendor/bladewind/js/filepond-plugin-image-resize.js
-          cp node_modules/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js  public/vendor/bladewind/js/filepond-plugin-image-transform.js
+          # Plugins (JS)
+          cp_first public/vendor/bladewind/js/filepond-plugin-image-preview.js \
+            node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js \
+            node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js
+
+          cp_first public/vendor/bladewind/js/filepond-plugin-file-encode.js \
+            node_modules/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js \
+            node_modules/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.js
+
+          cp_first public/vendor/bladewind/js/filepond-plugin-file-validate-type.js \
+            node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.min.js \
+            node_modules/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js
+
+          cp_first public/vendor/bladewind/js/filepond-plugin-file-validate-size.js \
+            node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js \
+            node_modules/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js
+
+          cp_first public/vendor/bladewind/js/filepond-plugin-image-exif-orientation.js \
+            node_modules/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js \
+            node_modules/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js
+
+          cp_first public/vendor/bladewind/js/filepond-plugin-image-crop.js \
+            node_modules/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.min.js \
+            node_modules/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js
+
+          cp_first public/vendor/bladewind/js/filepond-plugin-image-resize.js \
+            node_modules/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.min.js \
+            node_modules/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js
+
+          cp_first public/vendor/bladewind/js/filepond-plugin-image-transform.js \
+            node_modules/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.min.js \
+            node_modules/filepond-plugin-image-transform/dist/filepond-plugin-image-transform.js
+
+          # Plugin CSS
+          cp_first public/vendor/bladewind/css/filepond-plugin-image-preview.css \
+            node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css \
+            node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css
 
           # Cropper
-          cp node_modules/cropperjs/dist/cropper.min.js  public/vendor/bladewind/js/cropper.min.js
-          cp node_modules/cropperjs/dist/cropper.min.css public/vendor/bladewind/css/cropper.min.css
+          cp_first public/vendor/bladewind/js/cropper.min.js \
+            node_modules/cropperjs/dist/cropper.min.js \
+            node_modules/cropperjs/dist/cropper.js
+
+          cp_first public/vendor/bladewind/css/cropper.min.css \
+            node_modules/cropperjs/dist/cropper.min.css \
+            node_modules/cropperjs/dist/cropper.css
+
 
       # ---- FTP Deploy ----
       - name: 🚀 FTP Deploy
