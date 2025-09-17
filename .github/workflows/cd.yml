@@ -31,13 +31,23 @@ jobs:
           npm run build
 
 
-      - name: Ensure cropperjs is available
+      - name: Resolve cropperjs paths (robust)
         run: |
-          if [ ! -d node_modules/cropperjs/dist ]; then
-            echo "cropperjs missing from lockfile; installing fallback"
-            npm i -D cropperjs@^2 --no-save
-          fi
-          ls -l node_modules/cropperjs/dist
+          node -e "
+            const path = require('path');
+            try {
+              const pkg = require.resolve('cropperjs/package.json');
+              const root = path.dirname(pkg);
+              const dist = path.join(root, 'dist');
+              const jsMin = path.join(dist, 'cropper.min.js');
+              const js = path.join(dist, 'cropper.js');
+              const cssMin = path.join(dist, 'cropper.min.css');
+              const css = path.join(dist, 'cropper.css');
+              console.log('CROPPER_PKG=', pkg);
+              console.log('CROPPER_JS=', require('fs').existsSync(jsMin) ? jsMin : js);
+              console.log('CROPPER_CSS=', require('fs').existsSync(cssMin) ? cssMin : css);
+            } catch (e) { console.error('cropperjs not resolvable', e); process.exit(1); }
+          "
 
       - name: Copy FilePond & Cropper to /public/vendor/bladewind (resilient)
         shell: bash
@@ -58,23 +68,20 @@ jobs:
             return 0
           }
 
-          mkdir -p public/vendor/bladewind/js public/vendor/bladewind/css
+          # --- Cropper (resolve via Node to handle any version layout) ---
+          CROPPER_JS=$(node -p "const p=require('path');const fs=require('fs');const root=p.dirname(require.resolve('cropperjs/package.json'));const d=p.join(root,'dist');const a=[p.join(d,'cropper.min.js'),p.join(d,'cropper.js')];a.find(f=>fs.existsSync(f))||''")
+          CROPPER_CSS=$(node -p "const p=require('path');const fs=require('fs');const root=p.dirname(require.resolve('cropperjs/package.json'));const d=p.join(root,'dist');const a=[p.join(d,'cropper.min.css'),p.join(d,'cropper.css')];a.find(f=>fs.existsSync(f))||''")
 
-          # --- Cropper (robust: pick min or non-min) ---
-          CSS=$(ls node_modules/cropperjs/dist/cropper*.css 2>/dev/null | head -n1 || true)
-          JS=$(ls node_modules/cropperjs/dist/cropper*.min.js 2>/dev/null | head -n1 || true)
-          [ -z "$JS" ] && JS=$(ls node_modules/cropperjs/dist/cropper.js 2>/dev/null | head -n1 || true)
-
-          if [ -n "$CSS" ]; then
-          cp "$CSS" public/vendor/bladewind/css/cropper.min.css
+          if [ -n "$CROPPER_JS" ] && [ -n "$CROPPER_CSS" ]; then
+            mkdir -p public/vendor/bladewind/js public/vendor/bladewind/css
+            cp "$CROPPER_JS"  public/vendor/bladewind/js/cropper.min.js
+            cp "$CROPPER_CSS" public/vendor/bladewind/css/cropper.min.css
+            echo "✔ copied cropper js/css"
           else
-          echo "⚠ cropper css not found in node_modules/cropperjs/dist"
-          fi
-
-          if [ -n "$JS" ]; then
-          cp "$JS" public/vendor/bladewind/js/cropper.min.js
-          else
-          echo "⚠ cropper js not found in node_modules/cropperjs/dist"
+            echo "❌ cropper js/css not found via require.resolve()" >&2
+            ls -la node_modules/cropperjs || true
+            ls -la node_modules/cropperjs/dist || true
+            exit 1
           fi
 
           # FilePond core
@@ -124,9 +131,12 @@ jobs:
 
       - name: Assert cropper assets exist locally
         run: |
+          set -e
           test -f public/vendor/bladewind/css/cropper.min.css
           test -f public/vendor/bladewind/js/cropper.min.js
           echo "OK: cropper assets ready"
+          ls -l public/vendor/bladewind/css/ | sed -n '1,200p'
+          ls -l public/vendor/bladewind/js/  | sed -n '1,200p'
 
       # ---- Meta (version/env/sha) ----
       - name: 🔎 Derive version + env + short sha
