@@ -62,7 +62,7 @@
                 </a>
 
                 {{-- Right: Abgabe erstellen --}}
-                <a href="/submission"
+                <a href="/submit"
                    class="group block rounded-xl border border-slate-200 p-6 hover:border-indigo-300 hover:shadow-sm transition-all bg-white relative">
                     <div class="flex items-start gap-4">
                         <div class="mt-1 h-6 w-6 text-blue-500">
