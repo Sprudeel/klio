@@ -23,6 +23,14 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Ensure cropperjs is available
+        run: |
+          if [ ! -d node_modules/cropperjs/dist ]; then
+            echo "cropperjs missing from lockfile; installing fallback"
+            npm i -D cropperjs@^2 --no-save
+          fi
+          ls -l node_modules/cropperjs/dist
+
       - name: 📦 Install & build assets
         run: |
           npm ci
