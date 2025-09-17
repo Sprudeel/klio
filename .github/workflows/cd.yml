@@ -16,38 +16,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # ---- Meta (version/env/sha) ----
-      - name: 🔎 Derive version + env + short sha
-        id: meta
-        shell: bash
-        run: |
-          echo "GIT_SHA_SHORT=${GITHUB_SHA::8}" >> "$GITHUB_ENV"
-
-          APP_VERSION=$(grep -E '^APP_VERSION=' .env.example | cut -d= -f2- | tr -d '"' || true)
-          APP_ENV=$(grep -E '^APP_ENV=' .env.example | cut -d= -f2- | tr -d '"' || true)
-
-          : "${APP_VERSION:=0.0.0}"
-          : "${APP_ENV:=production}"
-
-          echo "APP_VERSION=${APP_VERSION}" >> "$GITHUB_ENV"
-          echo "APP_ENV=${APP_ENV}" >> "$GITHUB_ENV"
-
-      # ---- Create version.json (valid JSON!) ----
-      - name: 🧾 Write version.json
-        shell: bash
-        run: |
-          mkdir -p public/build
-          cat > public/build/version.json <<JSON
-          {
-            "version": "${APP_VERSION}",
-            "sha": "${GIT_SHA_SHORT}",
-            "env": "${APP_ENV}",
-            "built_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          }
-          JSON
-          echo "Wrote public/build/version.json:"
-          cat public/build/version.json
-
       # ---- Frontend build ----
       - name: 🟢 Use Node
         uses: actions/setup-node@v4
@@ -85,6 +53,8 @@ jobs:
           cp_first public/vendor/bladewind/css/cropper.min.css \
             node_modules/cropperjs/dist/cropper.min.css \
             node_modules/cropperjs/dist/cropper.css
+          cp node_modules/cropperjs/dist/cropper.min.css public/vendor/bladewind/css/
+          cp node_modules/cropperjs/dist/cropper.min.js public/vendor/bladewind/js/
 
           # FilePond core
           cp_first public/vendor/bladewind/js/filepond.min.js \
@@ -131,7 +101,37 @@ jobs:
           echo "---- Listing deployed vendor/bladewind ----"
           find public/vendor/bladewind -maxdepth 2 -type f -print
 
+      # ---- Meta (version/env/sha) ----
+      - name: 🔎 Derive version + env + short sha
+        id: meta
+        shell: bash
+        run: |
+          echo "GIT_SHA_SHORT=${GITHUB_SHA::8}" >> "$GITHUB_ENV"
 
+          APP_VERSION=$(grep -E '^APP_VERSION=' .env.example | cut -d= -f2- | tr -d '"' || true)
+          APP_ENV=$(grep -E '^APP_ENV=' .env.example | cut -d= -f2- | tr -d '"' || true)
+
+          : "${APP_VERSION:=0.0.0}"
+          : "${APP_ENV:=production}"
+
+          echo "APP_VERSION=${APP_VERSION}" >> "$GITHUB_ENV"
+          echo "APP_ENV=${APP_ENV}" >> "$GITHUB_ENV"
+
+      # ---- Create version.json (valid JSON!) ----
+      - name: 🧾 Write version.json
+        shell: bash
+        run: |
+          mkdir -p public/build
+          cat > public/build/version.json <<JSON
+          {
+            "version": "${APP_VERSION}",
+            "sha": "${GIT_SHA_SHORT}",
+            "env": "${APP_ENV}",
+            "built_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          JSON
+          echo "Wrote public/build/version.json:"
+          cat public/build/version.json
       # ---- FTP Deploy ----
       - name: 🚀 FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
